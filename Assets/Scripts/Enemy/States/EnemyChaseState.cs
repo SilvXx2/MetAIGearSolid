@@ -63,7 +63,11 @@ public class EnemyChaseState : IState
             Vector3 futurePosition = target.position + targetVelocity * predictionTime;
             futurePosition.y = context.Transform.position.y;
 
-            Vector3 moveDirection = (futurePosition - context.Transform.position).normalized;
+            Vector3 desiredDirection = (futurePosition - context.Transform.position).normalized;
+            Vector3 moveDirection = context.Avoidance != null
+                ? context.Avoidance.GetSteeredDirection(desiredDirection)
+                : desiredDirection;
+
             context.Mover.Move(moveDirection, context.ChaseSpeed);
             context.Mover.Rotate(moveDirection);
         }

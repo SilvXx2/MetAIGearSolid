@@ -45,7 +45,11 @@ public class EnemyPatrolState : IState
             return;
         }
 
-        Vector3 moveDirection = toWaypoint.normalized;
+        Vector3 desiredDirection = toWaypoint.normalized;
+        Vector3 moveDirection = context.Avoidance != null
+            ? context.Avoidance.GetSteeredDirection(desiredDirection)
+            : desiredDirection;
+
         context.Mover.Move(moveDirection, context.PatrolSpeed);
         context.Mover.Rotate(moveDirection);
     }

@@ -5,6 +5,7 @@ public interface IEnemyContext
     StateMachine StateMachine { get; }
     IMover Mover { get; }
     IVisionSensor Vision { get; }
+    IAvoidanceSensor Avoidance { get; }
     IState PatrolState { get; }
     IState ChaseState { get; }
     Transform[] Waypoints { get; }

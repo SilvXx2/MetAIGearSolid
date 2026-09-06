@@ -11,11 +11,13 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
 
     [SerializeField] private float loseTargetTime = 3f;
     [SerializeField] private EnemyLineOfSightSensor visionSensor;
+    [SerializeField] private EnemyObstacleAvoidanceSensor avoidanceSensor;
     [SerializeField] private Rigidbody rb;
 
     public StateMachine StateMachine { get; private set; }
     public IMover Mover => this;
     public IVisionSensor Vision => visionSensor;
+    public IAvoidanceSensor Avoidance => avoidanceSensor;
     public IState PatrolState { get; private set; }
     public IState ChaseState { get; private set; }
     public Transform[] Waypoints => waypoints;
@@ -37,6 +39,23 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
         if (visionSensor == null)
         {
             visionSensor = GetComponent<EnemyLineOfSightSensor>() ?? gameObject.AddComponent<EnemyLineOfSightSensor>();
+        }
+
+        if (avoidanceSensor == null)
+        {
+            avoidanceSensor = GetComponent<EnemyObstacleAvoidanceSensor>() ?? gameObject.AddComponent<EnemyObstacleAvoidanceSensor>();
+        }
+
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+        {
+            PhysicsMaterial frictionless = new PhysicsMaterial("EnemyFrictionless")
+            {
+                dynamicFriction = 0f,
+                staticFriction = 0f,
+                frictionCombine = PhysicsMaterialCombine.Minimum
+            };
+            col.material = frictionless;
         }
 
         StateMachine = new StateMachine();

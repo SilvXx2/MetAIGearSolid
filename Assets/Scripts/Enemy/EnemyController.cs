@@ -34,7 +34,7 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
             rb = GetComponent<Rigidbody>() ?? gameObject.AddComponent<Rigidbody>();
         }
         rb.useGravity = false;
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
         if (visionSensor == null)
         {
@@ -75,7 +75,7 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
 
     public void Move(Vector3 direction, float speed)
     {
-        rb.linearVelocity = new Vector3(direction.x * speed, rb.linearVelocity.y, direction.z * speed);
+        rb.linearVelocity = new Vector3(direction.x * speed, 0f, direction.z * speed);
     }
 
     public void Rotate(Vector3 direction)

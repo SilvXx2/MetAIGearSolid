@@ -50,6 +50,7 @@ public class EnemyChaseState : IState
         if (Time.deltaTime > 0f)
         {
             targetVelocity = (target.position - lastTargetPos) / Time.deltaTime;
+            targetVelocity.y = 0f;
             lastTargetPos = target.position;
         }
 
@@ -64,6 +65,7 @@ public class EnemyChaseState : IState
             futurePosition.y = context.Transform.position.y;
 
             Vector3 desiredDirection = (futurePosition - context.Transform.position).normalized;
+            desiredDirection.y = 0f;
             Vector3 moveDirection = context.Avoidance != null
                 ? context.Avoidance.GetSteeredDirection(desiredDirection)
                 : desiredDirection;

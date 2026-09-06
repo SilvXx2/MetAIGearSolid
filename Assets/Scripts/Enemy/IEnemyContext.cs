@@ -8,6 +8,8 @@ public interface IEnemyContext
     IAvoidanceSensor Avoidance { get; }
     IState PatrolState { get; }
     IState ChaseState { get; }
+    IState RunAwayState { get; }
+    IState AlertState { get; }
     Transform[] Waypoints { get; }
     float PatrolSpeed { get; }
     float ChaseSpeed { get; }

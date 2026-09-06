@@ -18,8 +18,10 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
     public IMover Mover => this;
     public IVisionSensor Vision => visionSensor;
     public IAvoidanceSensor Avoidance => avoidanceSensor;
-    public IState PatrolState { get; private set; }
-    public IState ChaseState { get; private set; }
+    public IState PatrolState { get; protected set; }
+    public IState ChaseState { get; protected set; }
+    public IState RunAwayState { get; protected set; }
+    public virtual IState AlertState => ChaseState;
     public Transform[] Waypoints => waypoints;
     public float PatrolSpeed => patrolSpeed;
     public float ChaseSpeed => chaseSpeed;
@@ -27,7 +29,7 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
     public float LoseTargetTime => loseTargetTime;
     public Transform Transform => transform;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         if (rb == null)
         {
@@ -58,6 +60,11 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
             col.material = frictionless;
         }
 
+        InitializeStates();
+    }
+
+    protected virtual void InitializeStates()
+    {
         StateMachine = new StateMachine();
         PatrolState = new EnemyPatrolState(this);
         ChaseState = new EnemyChaseState(this);

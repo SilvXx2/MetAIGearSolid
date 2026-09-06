@@ -19,7 +19,7 @@ public class EnemyPatrolState : IState
     {
         if (context.Vision != null && context.Vision.CanSeeTarget)
         {
-            context.StateMachine.ChangeState(context.ChaseState);
+            context.StateMachine.ChangeState(context.AlertState);
             return;
         }
 

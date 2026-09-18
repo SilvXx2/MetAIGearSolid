@@ -5,6 +5,8 @@ public class EnemyPatrolState : IState
     private readonly IEnemyContext context;
     private int currentIndex;
 
+    private int patrolDirection = 1;
+
     public EnemyPatrolState(IEnemyContext context)
     {
         this.context = context;
@@ -13,6 +15,7 @@ public class EnemyPatrolState : IState
     public void Enter()
     {
         currentIndex = context.GetClosestWaypointIndex();
+        patrolDirection = 1;
     }
 
     public void Update()
@@ -41,7 +44,19 @@ public class EnemyPatrolState : IState
 
         if (toWaypoint.sqrMagnitude <= context.WaypointThreshold * context.WaypointThreshold)
         {
-            currentIndex = (currentIndex + 1) % context.Waypoints.Length;
+            if (context.Waypoints.Length > 1)
+            {
+                if (currentIndex >= context.Waypoints.Length - 1)
+                {
+                    patrolDirection = -1;
+                }
+                else if (currentIndex <= 0)
+                {
+                    patrolDirection = 1;
+                }
+
+                currentIndex += patrolDirection;
+            }
             return;
         }
 

@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8688783072381424276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 515054123280231014}
+  - component: {fileID: 6119534901009686762}
+  - component: {fileID: 8426806177503094704}
+  - component: {fileID: 8239506466068114216}
+  - component: {fileID: 444851950017464111}
+  m_Layer: 0
+  m_Name: GameFlow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &515054123280231014
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8688783072381424276}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6119534901009686762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8688783072381424276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbd450f330d4ae2459c32a1929f91516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitySceneLoader
+  loadMode: 0
+--- !u!114 &8426806177503094704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8688783072381424276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd6bf100a3bd6da4f8b519f51924063e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneLoader
+  scenes:
+  - sceneAsset: {fileID: 102900000, guid: cd1cbdfcdc69d1f45817abcef37fc2b2, type: 3}
+    scenePath: Assets/Scenes/Testing.unity
+  - sceneAsset: {fileID: 102900000, guid: 77702c98ba8b3524ca84aeee415c87d8, type: 3}
+    scenePath: Assets/Scenes/Victoria.unity
+  - sceneAsset: {fileID: 102900000, guid: fcd993a2169d418479a15405391ce482, type: 3}
+    scenePath: Assets/Scenes/Derrota.unity
+--- !u!114 &8239506466068114216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8688783072381424276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03f1dc532abb7b54fb767a32af9ad177, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameEndController
+  sceneCatalogSource: {fileID: 0}
+  victorySceneName: Victoria
+  defeatSceneName: Derrota
+--- !u!114 &444851950017464111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8688783072381424276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0aa9fe1141bbf6147b12273fc94a1df2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthEndTrigger
+  result: 1
+  healthSource: {fileID: 0}
+  endHandlerSource: {fileID: 0}

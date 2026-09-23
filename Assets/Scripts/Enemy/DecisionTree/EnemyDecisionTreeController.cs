@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class EnemyDecisionTreeController : EnemyController
 {
-    [Header("Parametros de Combate")]
+    [Header("Parametros de Combate Cuerpo a Cuerpo")]
     [SerializeField] private bool hasWeapon = true;
     [SerializeField] private int maxAmmo = 5;
     [SerializeField] private int currentAmmo = 5;
     [SerializeField] private float attackDistance = 2.5f;
+    [SerializeField] private float attackCooldown = 1.2f;
     [SerializeField] private float reloadDuration = 3.5f;
     [SerializeField] private Transform weaponSpawnPoint;
-    [SerializeField] private AttackVisualEffect attackVisualEffect;
 
     [Header("Debug")]
     [SerializeField] private string lastDecision = "Ninguna";
@@ -17,13 +17,20 @@ public class EnemyDecisionTreeController : EnemyController
 
     public IState AttackState { get; private set; }
     private IDecisionNode rootNode;
+    private IAttackEffect attackEffect;
 
     protected override void InitializeStates()
     {
         base.InitializeStates();
         RunAwayState ??= new EnemyRunAwayState(this, safeDistance: 12f);
-        AttackState = new EnemyAttackState(this, OnEnemyFiredWeapon);
-        if (attackVisualEffect == null) attackVisualEffect = GetComponent<AttackVisualEffect>();
+        AttackState = new EnemyAttackState(this, OnEnemyAttacked, attackCooldown);
+
+        attackEffect = GetComponent<IAttackEffect>();
+
+        if (attackEffect == null)
+        {
+            Debug.LogError($"{name}: falta un componente que implemente IAttackEffect (por ejemplo AttackVisualEffect).", this);
+        }
     }
 
     private void Start()
@@ -111,16 +118,10 @@ public class EnemyDecisionTreeController : EnemyController
         currentAmmo = maxAmmo;
     }
 
-    private void OnEnemyFiredWeapon()
+    private void OnEnemyAttacked()
     {
         if (currentAmmo > 0) currentAmmo--;
-        attackVisualEffect?.TriggerEffect();
-    }
-
-    public void SetWeapon(bool equipped, int ammo = 5)
-    {
-        hasWeapon = equipped;
-        currentAmmo = ammo;
+        attackEffect?.TriggerEffect();
     }
 
     private void OnDrawGizmosSelected()

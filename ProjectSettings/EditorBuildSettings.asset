@@ -5,9 +5,21 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: 5db0b0d989e6a124d9f26312aec7def5
+  - enabled: 1
+    path: Assets/Scenes/Testing.unity
+    guid: cd1cbdfcdc69d1f45817abcef37fc2b2
+  - enabled: 1
+    path: Assets/Scenes/Victoria.unity
+    guid: 77702c98ba8b3524ca84aeee415c87d8
+  - enabled: 1
+    path: Assets/Scenes/Derrota.unity
+    guid: fcd993a2169d418479a15405391ce482
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -1,14 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Cámara de seguimiento estilo Metal Gear Solid 1 (Top-Down con ángulo cenital inclinado).
-/// Proporciona:
-/// - Perspectiva cenital inclinada (~60°) con rotación fija característica de MGS1.
-/// - Suavizado cinematográfico (SmoothDamp) sin tirones (LateUpdate).
-/// - Anticipación de visión (Look-Ahead) hacia donde mira el jugador para ver enemigos por delante.
-/// - Límites de escenario/habitación (Room Bounds) opcionales.
-/// - Efecto de temblor (Screen Shake) para impactos o explosiones.
-/// </summary>
 [AddComponentMenu("Camera/MGS Follow Camera")]
 public class MGSFollowCamera : MonoBehaviour
 {
@@ -55,19 +46,14 @@ public class MGSFollowCamera : MonoBehaviour
     [Header("--- Temblor de Pantalla (Screen Shake) ---")]
     [SerializeField] private bool enableShake = true;
 
-    // Variables internas de estado
     private Vector3 currentVelocity;
     private Vector3 currentLookAhead;
     private Vector3 lookAheadVelocity;
     private Vector3 targetOffset;
     private float offsetTransitionSpeed = 5f;
 
-    // Estado del Screen Shake
     private float shakeTimer = 0f;
     private float shakeMagnitude = 0f;
-
-    public Transform Target => target;
-    public bool UseBounds { get => useBounds; set => useBounds = value; }
 
     private void Awake()
     {
@@ -81,10 +67,8 @@ public class MGSFollowCamera : MonoBehaviour
 
     private void Start()
     {
-        // Aplicar la rotación fija clásica de MGS1
         transform.rotation = Quaternion.Euler(cameraRotation);
 
-        // Posicionar instantáneamente en el primer frame para evitar que viaje desde el origen
         if (target != null)
         {
             SnapToTarget();
@@ -103,15 +87,13 @@ public class MGSFollowCamera : MonoBehaviour
             if (target == null) return;
         }
 
-        // 1. Transición suave de offset si fue modificado (por ejemplo, al pegarse a una pared)
         offset = Vector3.Lerp(offset, targetOffset, Time.deltaTime * offsetTransitionSpeed);
 
-        // 2. Calcular la anticipación de visión (Look-Ahead)
         Vector3 targetLookAhead = Vector3.zero;
         if (enableLookAhead)
         {
             Vector3 forwardDir = target.forward;
-            forwardDir.y = 0f; // Mantener la anticipación en el plano del suelo
+            forwardDir.y = 0f;
             if (forwardDir.sqrMagnitude > 0.001f)
             {
                 targetLookAhead = forwardDir.normalized * lookAheadDistance;
@@ -125,17 +107,14 @@ public class MGSFollowCamera : MonoBehaviour
             lookAheadSmoothTime
         );
 
-        // 3. Calcular posición deseada
         Vector3 desiredPosition = target.position + offset + currentLookAhead;
 
-        // 4. Aplicar límites de habitación/escenario si están activos
         if (useBounds)
         {
             desiredPosition.x = Mathf.Clamp(desiredPosition.x, minBounds.x, maxBounds.x);
             desiredPosition.z = Mathf.Clamp(desiredPosition.z, minBounds.y, maxBounds.y);
         }
 
-        // 5. Suavizado de seguimiento hacia la posición deseada
         Vector3 smoothedPosition = Vector3.SmoothDamp(
             transform.position,
             desiredPosition,
@@ -143,28 +122,21 @@ public class MGSFollowCamera : MonoBehaviour
             smoothTime
         );
 
-        // 6. Aplicar temblor de pantalla (Screen Shake) si está activo
         if (enableShake && shakeTimer > 0f)
         {
             Vector3 shakeOffset = Random.insideUnitSphere * shakeMagnitude;
-            shakeOffset.y *= 0.5f; // Reducir movimiento vertical para mantener estabilidad visual
+            shakeOffset.y *= 0.5f;
             smoothedPosition += shakeOffset;
 
             shakeTimer -= Time.deltaTime;
         }
 
         transform.position = smoothedPosition;
-
-        // Mantener la rotación fija
         transform.rotation = Quaternion.Euler(cameraRotation);
     }
 
-    /// <summary>
-    /// Busca automáticamente el Transform del jugador en la escena.
-    /// </summary>
-    public void FindPlayerTarget()
+    private void FindPlayerTarget()
     {
-        // Buscar primero por el script PlayerMovement existente en el proyecto
         var playerMovement = FindAnyObjectByType<PlayerMovement>();
         if (playerMovement != null)
         {
@@ -172,7 +144,6 @@ public class MGSFollowCamera : MonoBehaviour
             return;
         }
 
-        // Alternativa: buscar por Tag "Player"
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
         {
@@ -180,11 +151,7 @@ public class MGSFollowCamera : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Teletransporta inmediatamente la cámara a la posición del jugador sin suavizado.
-    /// Útil al reaparecer, cambiar de zona o iniciar la partida.
-    /// </summary>
-    public void SnapToTarget()
+    private void SnapToTarget()
     {
         if (target == null) return;
 
@@ -203,57 +170,6 @@ public class MGSFollowCamera : MonoBehaviour
         transform.rotation = Quaternion.Euler(cameraRotation);
     }
 
-    /// <summary>
-    /// Asigna dinámicamente un nuevo objetivo para la cámara.
-    /// </summary>
-    public void SetTarget(Transform newTarget, bool snapImmediately = false)
-    {
-        target = newTarget;
-        if (snapImmediately && target != null)
-        {
-            SnapToTarget();
-        }
-    }
-
-    /// <summary>
-    /// Permite modificar el offset de forma dinámica (por ejemplo, zoom o encuadre de pared estilo MGS).
-    /// </summary>
-    public void SetCustomOffset(Vector3 newOffset, float transitionSpeed = 5f)
-    {
-        targetOffset = newOffset;
-        offsetTransitionSpeed = transitionSpeed;
-    }
-
-    /// <summary>
-    /// Restablece el offset al valor original configurado en el inspector.
-    /// </summary>
-    public void ResetOffset(Vector3 defaultOffset, float transitionSpeed = 5f)
-    {
-        targetOffset = defaultOffset;
-        offsetTransitionSpeed = transitionSpeed;
-    }
-
-    /// <summary>
-    /// Configura los límites del área/habitación dinámicamente (por ejemplo al entrar a una nueva sala).
-    /// </summary>
-    public void SetBounds(Vector2 min, Vector2 max)
-    {
-        minBounds = min;
-        maxBounds = max;
-        useBounds = true;
-    }
-
-    /// <summary>
-    /// Desactiva los límites de la cámara.
-    /// </summary>
-    public void DisableBounds()
-    {
-        useBounds = false;
-    }
-
-    /// <summary>
-    /// Dispara un temblor de pantalla por una duración e intensidad determinada.
-    /// </summary>
     public void TriggerShake(float duration, float magnitude)
     {
         shakeTimer = duration;
@@ -262,7 +178,6 @@ public class MGSFollowCamera : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        // Dibujar límites del área en la escena de Unity si están activados
         if (useBounds)
         {
             Gizmos.color = Color.yellow;
@@ -279,7 +194,6 @@ public class MGSFollowCamera : MonoBehaviour
             Gizmos.DrawWireCube(center, size);
         }
 
-        // Dibujar línea guía hacia el objetivo y punto de anticipación
         if (target != null)
         {
             Gizmos.color = Color.cyan;

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9148428527558364792}
   - component: {fileID: 1230641547270517843}
   - component: {fileID: 6717652410011679191}
-  - component: {fileID: 5044217865652279827}
+  - component: {fileID: 904280065083278181}
   m_Layer: 0
   m_Name: Gun
   m_TagString: Untagged
@@ -91,27 +91,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5044217865652279827
-BoxCollider:
+--- !u!114 &904280065083278181
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 71483131684855171}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0.00000023841858, y: 0, z: -0.00000023841858}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcc11fd5f62e484d9fad93353dc676d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DamageAura
+  auraOrigin: {fileID: 5266405692156091395}
+  radius: 2.5
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 1
+  damagePerTick: 20
+  tickInterval: 0.5
+  damageOnActivate: 1
+  ignoreOwnHierarchy: 1
 --- !u!1 &2665274237846792925
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,7 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackVisualEffect
   visualObject: {fileID: 71483131684855171}
-  duration: 0.15
+  duration: 0.4
 --- !u!114 &2732503136610506153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,8 +338,8 @@ MonoBehaviour:
   maxAmmo: 5
   currentAmmo: 5
   attackDistance: 2.5
+  attackCooldown: 1.2
   reloadDuration: 3.5
   weaponSpawnPoint: {fileID: 0}
-  attackVisualEffect: {fileID: 5852077907471340974}
   lastDecision: Ninguna
   currentReloadTimer: 0

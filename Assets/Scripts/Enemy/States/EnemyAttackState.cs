@@ -1,11 +1,6 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// Estado de Ataque del enemigo requerido por la consigna de IA.
-/// Cuando el NPC está a distancia del jugador, se detiene, lo encara y ataca.
-/// Puede invocar un callback para consumir munición y notificar el fin del juego / Game Over.
-/// </summary>
 public class EnemyAttackState : IState
 {
     private readonly IEnemyContext context;
@@ -23,12 +18,11 @@ public class EnemyAttackState : IState
     public void Enter()
     {
         context.Mover.Move(Vector3.zero, 0f);
-        cooldownTimer = 0f; // Atacar inmediatamente al entrar en rango
+        cooldownTimer = 0f;
     }
 
     public void Update()
     {
-        // En estado de ataque el enemigo se mantiene firme
         context.Mover.Move(Vector3.zero, 0f);
 
         Transform target = context.Vision?.Target;
@@ -45,15 +39,9 @@ public class EnemyAttackState : IState
         cooldownTimer -= Time.deltaTime;
         if (cooldownTimer <= 0f)
         {
-            ExecuteAttack();
+            onAttackAction?.Invoke();
             cooldownTimer = attackCooldown;
         }
-    }
-
-    private void ExecuteAttack()
-    {
-        Debug.Log($"[EnemyAttackState] ¡{context.Transform.name} ejecutó un ATAQUE hacia el jugador!");
-        onAttackAction?.Invoke();
     }
 
     public void Exit()

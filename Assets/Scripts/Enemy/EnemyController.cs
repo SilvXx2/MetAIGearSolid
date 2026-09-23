@@ -19,6 +19,7 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
     public IVisionSensor Vision => visionSensor;
     public IAvoidanceSensor Avoidance => avoidanceSensor;
     public IState PatrolState { get; protected set; }
+    public IState IdleState { get; protected set; }
     public IState ChaseState { get; protected set; }
     public IState RunAwayState { get; protected set; }
     public virtual IState AlertState => ChaseState;
@@ -33,19 +34,22 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
     {
         if (rb == null)
         {
-            rb = GetComponent<Rigidbody>() ?? gameObject.AddComponent<Rigidbody>();
+            rb = GetComponent<Rigidbody>();
+            if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
         }
         rb.useGravity = false;
         rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
         if (visionSensor == null)
         {
-            visionSensor = GetComponent<EnemyLineOfSightSensor>() ?? gameObject.AddComponent<EnemyLineOfSightSensor>();
+            visionSensor = GetComponent<EnemyLineOfSightSensor>();
+            if (visionSensor == null) visionSensor = gameObject.AddComponent<EnemyLineOfSightSensor>();
         }
 
         if (avoidanceSensor == null)
         {
-            avoidanceSensor = GetComponent<EnemyObstacleAvoidanceSensor>() ?? gameObject.AddComponent<EnemyObstacleAvoidanceSensor>();
+            avoidanceSensor = GetComponent<EnemyObstacleAvoidanceSensor>();
+            if (avoidanceSensor == null) avoidanceSensor = gameObject.AddComponent<EnemyObstacleAvoidanceSensor>();
         }
 
         Collider col = GetComponent<Collider>();
@@ -67,7 +71,10 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
     {
         StateMachine = new StateMachine();
         PatrolState = new EnemyPatrolState(this);
+        IdleState = new EnemyIdleState(this);
         ChaseState = new EnemyChaseState(this);
+        LayerMask mask = avoidanceSensor != null ? avoidanceSensor.ObstacleMask : LayerMask.GetMask("Default");
+        RunAwayState = new EnemyRunAwayState(this, safeDistance: 12f, obstacleMask: mask);
     }
 
     private void Start()
@@ -80,9 +87,20 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
         StateMachine.Update();
     }
 
+    private void OnValidate()
+    {
+        if (rb == null) rb = GetComponent<Rigidbody>();
+        if (visionSensor == null) visionSensor = GetComponent<EnemyLineOfSightSensor>();
+        if (avoidanceSensor == null) avoidanceSensor = GetComponent<EnemyObstacleAvoidanceSensor>();
+    }
+
     public void Move(Vector3 direction, float speed)
     {
-        rb.linearVelocity = new Vector3(direction.x * speed, 0f, direction.z * speed);
+        if (rb == null) rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = new Vector3(direction.x * speed, 0f, direction.z * speed);
+        }
     }
 
     public void Rotate(Vector3 direction)
@@ -133,6 +151,14 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
             {
                 Gizmos.DrawLine(waypoints[i].position, waypoints[nextIndex].position);
             }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (RunAwayState is EnemyRunAwayState runAway && runAway.HideBehavior != null && Vision?.Target != null)
+        {
+            runAway.HideBehavior.DrawGizmos(transform.position, Vision.Target.position);
         }
     }
 }

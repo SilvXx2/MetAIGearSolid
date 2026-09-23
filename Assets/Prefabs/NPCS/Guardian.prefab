@@ -110,8 +110,6 @@ MonoBehaviour:
     m_Bits: 1
   damagePerTick: 20
   tickInterval: 0.5
-  damageOnActivate: 1
-  ignoreOwnHierarchy: 1
 --- !u!1 &2665274237846792925
 GameObject:
   m_ObjectHideFlags: 0
@@ -250,7 +248,7 @@ MonoBehaviour:
   eyeOffset: {x: 0, y: 1, z: 0}
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!54 &5317262529949821009
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -333,7 +331,7 @@ MonoBehaviour:
   loseTargetTime: 3
   visionSensor: {fileID: 6882387096455931232}
   avoidanceSensor: {fileID: 1537481481623706477}
-  rb: {fileID: 0}
+  rb: {fileID: 5317262529949821009}
   hasWeapon: 1
   maxAmmo: 5
   currentAmmo: 5

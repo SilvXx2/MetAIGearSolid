@@ -49,7 +49,7 @@ public class EnemyDecisionTreeController : EnemyController
     {
         var accionAtacar = new DecisionActionNode(() => SetDecisionState(AttackState, "Atacar"));
         var accionAcercarme = new DecisionActionNode(() => SetDecisionState(ChaseState, "Acercarme"));
-        var accionSeguirPatrullando = new DecisionActionNode(() => SetDecisionState(PatrolState, "Seguir patrullando"));
+        var accionSeguirPatrullando = new DecisionActionNode(DecisionSeguirPatrullando);
         var accionHuirRecargar = new DecisionActionNode(DecisionHuirYRecargar);
         var accionBuscarArma = new DecisionActionNode(DecisionBuscarArma);
 
@@ -79,6 +79,18 @@ public class EnemyDecisionTreeController : EnemyController
         if (StateMachine.CurrentState != state)
         {
             StateMachine.ChangeState(state);
+        }
+    }
+
+    private void DecisionSeguirPatrullando()
+    {
+        lastDecision = (StateMachine.CurrentState == IdleState) ? "En reposo / guardia" : "Seguir patrullando";
+        currentReloadTimer = 0f;
+
+        // Si ya está en PatrolState o en IdleState (rutina de patrulla), no interrumpir la máquina de estados
+        if (StateMachine.CurrentState != PatrolState && StateMachine.CurrentState != IdleState)
+        {
+            StateMachine.ChangeState(PatrolState);
         }
     }
 

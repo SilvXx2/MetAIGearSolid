@@ -16,6 +16,8 @@ public class EnemyObstacleAvoidanceSensor : MonoBehaviour, IAvoidanceSensor
     private Vector3 lastObstaclePos;
     private bool hasDetectedObstacle;
 
+    public LayerMask ObstacleMask => obstacleMask;
+
     public Vector3 GetSteeredDirection(Vector3 desiredDirection)
     {
         if (desiredDirection == Vector3.zero) return Vector3.zero;

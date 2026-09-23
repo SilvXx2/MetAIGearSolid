@@ -7,6 +7,7 @@ public interface IEnemyContext
     IVisionSensor Vision { get; }
     IAvoidanceSensor Avoidance { get; }
     IState PatrolState { get; }
+    IState IdleState { get; }
     IState ChaseState { get; }
     IState RunAwayState { get; }
     IState AlertState { get; }

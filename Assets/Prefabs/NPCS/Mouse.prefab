@@ -136,7 +136,7 @@ MonoBehaviour:
   eyeOffset: {x: 0, y: 1, z: 0}
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
 --- !u!54 &4658050790040386895
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -205,5 +205,5 @@ MonoBehaviour:
   loseTargetTime: 3
   visionSensor: {fileID: 8968055027142056180}
   avoidanceSensor: {fileID: 4993929771870900750}
-  rb: {fileID: 0}
+  rb: {fileID: 4658050790040386895}
   safeDistance: 12

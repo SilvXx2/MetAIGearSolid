@@ -9,6 +9,7 @@ public class FleeingEnemyController : EnemyController
     protected override void InitializeStates()
     {
         base.InitializeStates();
-        RunAwayState = new EnemyRunAwayState(this, safeDistance);
+        LayerMask mask = (Avoidance != null) ? Avoidance.ObstacleMask : LayerMask.GetMask("Default");
+        RunAwayState = new EnemyRunAwayState(this, safeDistance, mask);
     }
 }

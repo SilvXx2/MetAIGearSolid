@@ -30,27 +30,18 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
     public float LoseTargetTime => loseTargetTime;
     public Transform Transform => transform;
 
+    protected virtual float SafeDistance => 12f;
+
     protected virtual void Awake()
     {
-        if (rb == null)
-        {
-            rb = GetComponent<Rigidbody>();
-            if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
-        }
+        CacheComponents();
+
+        if (rb == null) rb = gameObject.AddComponent<Rigidbody>();
         rb.useGravity = false;
         rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 
-        if (visionSensor == null)
-        {
-            visionSensor = GetComponent<EnemyLineOfSightSensor>();
-            if (visionSensor == null) visionSensor = gameObject.AddComponent<EnemyLineOfSightSensor>();
-        }
-
-        if (avoidanceSensor == null)
-        {
-            avoidanceSensor = GetComponent<EnemyObstacleAvoidanceSensor>();
-            if (avoidanceSensor == null) avoidanceSensor = gameObject.AddComponent<EnemyObstacleAvoidanceSensor>();
-        }
+        if (visionSensor == null) visionSensor = gameObject.AddComponent<EnemyLineOfSightSensor>();
+        if (avoidanceSensor == null) avoidanceSensor = gameObject.AddComponent<EnemyObstacleAvoidanceSensor>();
 
         Collider col = GetComponent<Collider>();
         if (col != null)
@@ -67,27 +58,31 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
         InitializeStates();
     }
 
+    protected virtual void Start()
+    {
+        StateMachine.Initialize(PatrolState);
+    }
+
+    protected virtual void Update()
+    {
+        StateMachine.Update();
+    }
+
+    private void OnValidate()
+    {
+        CacheComponents();
+    }
+
     protected virtual void InitializeStates()
     {
         StateMachine = new StateMachine();
         PatrolState = new EnemyPatrolState(this);
         IdleState = new EnemyIdleState(this);
         ChaseState = new EnemyChaseState(this);
-        LayerMask mask = avoidanceSensor != null ? avoidanceSensor.ObstacleMask : LayerMask.GetMask("Default");
-        RunAwayState = new EnemyRunAwayState(this, safeDistance: 12f, obstacleMask: mask);
+        RunAwayState = new EnemyRunAwayState(this, SafeDistance);
     }
 
-    private void Start()
-    {
-        StateMachine.Initialize(PatrolState);
-    }
-
-    private void Update()
-    {
-        StateMachine.Update();
-    }
-
-    private void OnValidate()
+    private void CacheComponents()
     {
         if (rb == null) rb = GetComponent<Rigidbody>();
         if (visionSensor == null) visionSensor = GetComponent<EnemyLineOfSightSensor>();
@@ -96,11 +91,9 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
 
     public void Move(Vector3 direction, float speed)
     {
-        if (rb == null) rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.linearVelocity = new Vector3(direction.x * speed, 0f, direction.z * speed);
-        }
+        if (rb == null) return;
+
+        rb.linearVelocity = new Vector3(direction.x * speed, 0f, direction.z * speed);
     }
 
     public void Rotate(Vector3 direction)

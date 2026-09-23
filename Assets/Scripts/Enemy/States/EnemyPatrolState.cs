@@ -15,13 +15,11 @@ public class EnemyPatrolState : IState
     {
         if (context.Waypoints == null || context.Waypoints.Length == 0) return;
 
-        // Solo recalcular waypoint si no está inicializado o está fuera de rango
         if (currentIndex < 0 || currentIndex >= context.Waypoints.Length)
         {
             currentIndex = context.GetClosestWaypointIndex();
             patrolDirection = 1;
 
-            // Si el enemigo ya está sobre el waypoint más cercano, avanzar al siguiente para que no se quede quieto
             if (context.Waypoints.Length > 1 && context.Waypoints[currentIndex] != null)
             {
                 Vector3 toWp = context.Waypoints[currentIndex].position - context.Transform.position;
@@ -85,7 +83,6 @@ public class EnemyPatrolState : IState
 
                 currentIndex += patrolDirection;
 
-                // Al completar el tramo de patrulla, transiciona a IdleState (con Ruleta de Selección)
                 if (reachedEndpoint && context.IdleState != null)
                 {
                     context.StateMachine.ChangeState(context.IdleState);

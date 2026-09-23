@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 public class DecisionQuestionNode : IDecisionNode
 {
@@ -14,11 +13,11 @@ public class DecisionQuestionNode : IDecisionNode
         this.falseNode = falseNode;
     }
 
-    public void Excecute()
+    public void Execute()
     {
         if(question.Invoke())
-            trueNode.Excecute();
+            trueNode.Execute();
         else
-            falseNode.Excecute();
+            falseNode.Execute();
     }
 }

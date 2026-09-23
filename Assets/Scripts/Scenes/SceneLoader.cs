@@ -18,19 +18,6 @@ public class SceneLoader : MonoBehaviour, ISceneCatalog
         }
     }
 
-    public void Load(int index)
-    {
-        if (loader == null) return;
-
-        if (index < 0 || index >= scenes.Count)
-        {
-            Debug.LogError($"{name}: no hay ninguna escena en el indice {index}.", this);
-            return;
-        }
-
-        loader.Load(scenes[index].ScenePath);
-    }
-
     public void Load(string sceneName)
     {
         if (loader == null) return;

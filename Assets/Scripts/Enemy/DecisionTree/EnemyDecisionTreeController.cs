@@ -22,7 +22,6 @@ public class EnemyDecisionTreeController : EnemyController
     protected override void InitializeStates()
     {
         base.InitializeStates();
-        RunAwayState ??= new EnemyRunAwayState(this, safeDistance: 12f);
         AttackState = new EnemyAttackState(this, OnEnemyAttacked, attackCooldown);
 
         attackEffect = GetComponent<IAttackEffect>();
@@ -33,16 +32,16 @@ public class EnemyDecisionTreeController : EnemyController
         }
     }
 
-    private void Start()
+    protected override void Start()
     {
         BuildDecisionTree();
-        StateMachine.Initialize(PatrolState);
+        base.Start();
     }
 
-    private void Update()
+    protected override void Update()
     {
-        rootNode?.Excecute();
-        StateMachine.Update();
+        rootNode?.Execute();
+        base.Update();
     }
 
     private void BuildDecisionTree()
@@ -87,7 +86,6 @@ public class EnemyDecisionTreeController : EnemyController
         lastDecision = (StateMachine.CurrentState == IdleState) ? "En reposo / guardia" : "Seguir patrullando";
         currentReloadTimer = 0f;
 
-        // Si ya está en PatrolState o en IdleState (rutina de patrulla), no interrumpir la máquina de estados
         if (StateMachine.CurrentState != PatrolState && StateMachine.CurrentState != IdleState)
         {
             StateMachine.ChangeState(PatrolState);

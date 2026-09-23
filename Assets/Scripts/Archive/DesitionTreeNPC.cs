@@ -39,7 +39,7 @@ public class DesitionTreeNPC : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rootNode.Excecute();
+        rootNode.Execute();
 
         /*//if (Input.GetKeyDown(KeyCode.Mouse0))
         //{

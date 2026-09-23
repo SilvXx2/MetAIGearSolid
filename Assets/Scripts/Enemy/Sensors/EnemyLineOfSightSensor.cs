@@ -11,8 +11,6 @@ public class EnemyLineOfSightSensor : MonoBehaviour, IVisionSensor
 
     public bool CanSeeTarget => CheckLineOfSight();
     public Transform Target => target;
-    public float VisionDistance => visionDistance;
-    public float VisionAngle => visionAngle;
 
     private void Awake()
     {

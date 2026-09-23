@@ -49,16 +49,12 @@ public class MGSFollowCamera : MonoBehaviour
     private Vector3 currentVelocity;
     private Vector3 currentLookAhead;
     private Vector3 lookAheadVelocity;
-    private Vector3 targetOffset;
-    private float offsetTransitionSpeed = 5f;
 
     private float shakeTimer = 0f;
     private float shakeMagnitude = 0f;
 
     private void Awake()
     {
-        targetOffset = offset;
-
         if (target == null && autoFindPlayer)
         {
             FindPlayerTarget();
@@ -87,8 +83,6 @@ public class MGSFollowCamera : MonoBehaviour
             if (target == null) return;
         }
 
-        offset = Vector3.Lerp(offset, targetOffset, Time.deltaTime * offsetTransitionSpeed);
-
         Vector3 targetLookAhead = Vector3.zero;
         if (enableLookAhead)
         {
@@ -107,13 +101,7 @@ public class MGSFollowCamera : MonoBehaviour
             lookAheadSmoothTime
         );
 
-        Vector3 desiredPosition = target.position + offset + currentLookAhead;
-
-        if (useBounds)
-        {
-            desiredPosition.x = Mathf.Clamp(desiredPosition.x, minBounds.x, maxBounds.x);
-            desiredPosition.z = Mathf.Clamp(desiredPosition.z, minBounds.y, maxBounds.y);
-        }
+        Vector3 desiredPosition = ClampToBounds(target.position + offset + currentLookAhead);
 
         Vector3 smoothedPosition = Vector3.SmoothDamp(
             transform.position,
@@ -159,15 +147,17 @@ public class MGSFollowCamera : MonoBehaviour
         lookAheadVelocity = Vector3.zero;
         currentVelocity = Vector3.zero;
 
-        Vector3 initialPos = target.position + offset;
-        if (useBounds)
-        {
-            initialPos.x = Mathf.Clamp(initialPos.x, minBounds.x, maxBounds.x);
-            initialPos.z = Mathf.Clamp(initialPos.z, minBounds.y, maxBounds.y);
-        }
-
-        transform.position = initialPos;
+        transform.position = ClampToBounds(target.position + offset);
         transform.rotation = Quaternion.Euler(cameraRotation);
+    }
+
+    private Vector3 ClampToBounds(Vector3 position)
+    {
+        if (!useBounds) return position;
+
+        position.x = Mathf.Clamp(position.x, minBounds.x, maxBounds.x);
+        position.z = Mathf.Clamp(position.z, minBounds.y, maxBounds.y);
+        return position;
     }
 
     public void TriggerShake(float duration, float magnitude)

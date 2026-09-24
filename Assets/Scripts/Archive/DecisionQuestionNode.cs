@@ -1,6 +1,6 @@
 using System;
-using UnityEngine;
 
+// Preguntas del arbol
 public class DecisionQuestionNode : IDecisionNode
 {
     private Func<bool> question;
@@ -14,11 +14,13 @@ public class DecisionQuestionNode : IDecisionNode
         this.falseNode = falseNode;
     }
 
-    public void Excecute()
+    // Depende la condicion va para un lado o otro
+    public void Execute()
     {
-        if(question.Invoke())
-            trueNode.Excecute();
+        if (question.Invoke())
+            trueNode.Execute();
         else
-            falseNode.Excecute();
+            falseNode.Execute();
     }
 }
+

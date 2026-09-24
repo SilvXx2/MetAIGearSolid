@@ -16,13 +16,15 @@ public class EnemyDecisionTreeController : EnemyController
     [SerializeField] private float currentReloadTimer = 0f;
 
     public IState AttackState { get; private set; }
+    // Nodo raiz del arbol
     private IDecisionNode rootNode;
+    // Efecto visual al atacar
     private IAttackEffect attackEffect;
 
+    // Estado de Ataque y visual
     protected override void InitializeStates()
     {
         base.InitializeStates();
-        RunAwayState ??= new EnemyRunAwayState(this, safeDistance: 12f);
         AttackState = new EnemyAttackState(this, OnEnemyAttacked, attackCooldown);
 
         attackEffect = GetComponent<IAttackEffect>();
@@ -33,18 +35,20 @@ public class EnemyDecisionTreeController : EnemyController
         }
     }
 
-    private void Start()
+    protected override void Start()
     {
         BuildDecisionTree();
-        StateMachine.Initialize(PatrolState);
+        base.Start();
     }
 
-    private void Update()
+    protected override void Update()
     {
-        rootNode?.Excecute();
-        StateMachine.Update();
+        //Arbol en cada frame
+        rootNode?.Execute();
+        base.Update();
     }
 
+    // Preguntas del Arbol de abajo hacia atras
     private void BuildDecisionTree()
     {
         var accionAtacar = new DecisionActionNode(() => SetDecisionState(AttackState, "Atacar"));
@@ -53,11 +57,13 @@ public class EnemyDecisionTreeController : EnemyController
         var accionHuirRecargar = new DecisionActionNode(DecisionHuirYRecargar);
         var accionBuscarArma = new DecisionActionNode(DecisionBuscarArma);
 
+        // Direccion del arbol
         var preguntaEstoyCerca = new DecisionQuestionNode(IsCloseToPlayer, accionAtacar, accionAcercarme);
         var preguntaVeoAlJugador = new DecisionQuestionNode(() => Vision != null && Vision.CanSeeTarget, preguntaEstoyCerca, accionSeguirPatrullando);
         var preguntaTengoMunicion = new DecisionQuestionNode(() => currentAmmo > 0, preguntaVeoAlJugador, accionHuirRecargar);
         var preguntaTengoArma = new DecisionQuestionNode(() => hasWeapon, preguntaTengoMunicion, accionBuscarArma);
 
+        // Arranca aca
         rootNode = preguntaTengoArma;
     }
 
@@ -71,6 +77,7 @@ public class EnemyDecisionTreeController : EnemyController
         return toTarget.sqrMagnitude <= (attackDistance * attackDistance);
     }
 
+    // Cambio state segun arbol
     private void SetDecisionState(IState state, string decisionName)
     {
         lastDecision = decisionName;
@@ -87,7 +94,6 @@ public class EnemyDecisionTreeController : EnemyController
         lastDecision = (StateMachine.CurrentState == IdleState) ? "En reposo / guardia" : "Seguir patrullando";
         currentReloadTimer = 0f;
 
-        // Si ya está en PatrolState o en IdleState (rutina de patrulla), no interrumpir la máquina de estados
         if (StateMachine.CurrentState != PatrolState && StateMachine.CurrentState != IdleState)
         {
             StateMachine.ChangeState(PatrolState);
@@ -130,6 +136,7 @@ public class EnemyDecisionTreeController : EnemyController
         currentAmmo = maxAmmo;
     }
 
+    // Gasto un golpe al atacar (se cansa de tanto pegar el type)
     private void OnEnemyAttacked()
     {
         if (currentAmmo > 0) currentAmmo--;
@@ -149,3 +156,4 @@ public class EnemyDecisionTreeController : EnemyController
         }
     }
 }
+

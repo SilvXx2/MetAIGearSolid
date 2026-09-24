@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 public class DecisionActionNode : IDecisionNode
 {
@@ -9,8 +8,11 @@ public class DecisionActionNode : IDecisionNode
     {
         this.action = action;
     }
-    public void Excecute()
+
+    // Ejecuta la accion que recibe
+    public void Execute()
     {
         action.Invoke();
     }
 }
+

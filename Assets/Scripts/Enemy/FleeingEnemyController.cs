@@ -2,14 +2,13 @@ using UnityEngine;
 
 public class FleeingEnemyController : EnemyController
 {
+    // Distancia a la que se siente a salvo para dejar de huir
     [SerializeField] private float safeDistance = 12f;
 
+    // Overrideo el comportamiento de Deteccion para que corra al verme
     public override IState AlertState => RunAwayState;
 
-    protected override void InitializeStates()
-    {
-        base.InitializeStates();
-        LayerMask mask = (Avoidance != null) ? Avoidance.ObstacleMask : LayerMask.GetMask("Default");
-        RunAwayState = new EnemyRunAwayState(this, safeDistance, mask);
-    }
+    // le paso la distancia a la clase de la que heredo
+    protected override float SafeDistance => safeDistance;
 }
+

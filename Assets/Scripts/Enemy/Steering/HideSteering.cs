@@ -28,6 +28,7 @@ public class HideSteering
         this.arrivalThreshold = arrivalThreshold;
     }
 
+    //CALCULA LA DIRECCIÓN PARA OCULTARSE
     public Vector3 CalculateHideDirection(
         Vector3 targetPosition,
         Vector3 targetVelocity,
@@ -38,12 +39,14 @@ public class HideSteering
         agentPos.y = 0f;
         targetPosition.y = 0f;
 
+        //CON ESTO ESCANEAMOS LOS OBSTACULOS EN UN RADIO
         Collider[] obstacles = Physics.OverlapSphere(agentTransform.position, scanRadius, obstacleMask, QueryTriggerInteraction.Ignore);
 
         Collider bestObstacle = null;
         Vector3 bestHidingSpot = Vector3.zero;
         float minDistanceToSpot = float.MaxValue;
 
+        //FOR PARA BUCAR EL MEJOR LUGAR PARA ESCONDERSE
         for (int i = 0; i < obstacles.Length; i++)
         {
             Collider col = obstacles[i];
@@ -70,7 +73,7 @@ public class HideSteering
                 bestObstacle = col;
             }
         }
-
+        //SI NO HAY LUGAR PARA ESCONDERSE, HUYE
         if (bestObstacle == null)
         {
             hasHidingSpot = false;
@@ -86,6 +89,7 @@ public class HideSteering
             return evadeDir;
         }
 
+        //ESTO ES PARA QUE SEPA DONDE ESTA ESCONDIENDOSE
         hasHidingSpot = true;
         lastChosenSpot = bestHidingSpot;
 
@@ -93,6 +97,7 @@ public class HideSteering
         toSpot.y = 0f;
         float distance = toSpot.magnitude;
 
+        //SI LLEGA AL OBSTACULO, SE PARA
         if (distance <= arrivalThreshold)
         {
             return Vector3.zero;
@@ -111,6 +116,7 @@ public class HideSteering
         return finalDirection * speedFactor;
     }
 
+    //DIBUJA LOS GIZMOS PARA VER MEJOR
     public void DrawGizmos(Vector3 currentPosition, Vector3 targetPosition)
     {
         Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.15f);

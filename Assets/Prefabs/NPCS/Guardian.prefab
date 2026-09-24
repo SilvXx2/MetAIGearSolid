@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 1537481481623706477}
   - component: {fileID: 5852077907471340974}
   - component: {fileID: 2732503136610506153}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Guardian
   m_TagString: Untagged
   m_Icon: {fileID: 0}

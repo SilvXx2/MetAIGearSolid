@@ -20,7 +20,7 @@ public class EnemyRunAwayState : IState
 
         LayerMask mask = (obstacleMask.value != 0)
             ? obstacleMask
-            : (context.Avoidance != null ? context.Avoidance.ObstacleMask : LayerMask.GetMask("Default"));
+            : (context.Avoidance != null ? context.Avoidance.ObstacleMask : LayerMask.GetMask("Enemy"));
 
         hideSteering = new HideSteering(
             agentTransform: context.Transform,

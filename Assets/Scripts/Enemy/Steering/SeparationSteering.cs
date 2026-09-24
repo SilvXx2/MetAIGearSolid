@@ -13,6 +13,7 @@ public class SeparationSteering
         this.enemyLayerMask = enemyLayerMask;
     }
 
+    //CALCULA LA DIRECCIÓN PARA SEPARARSE DE LOS DEMÁS
     public Vector3 CalculateSeparationForce()
     {
         Vector3 agentPos = agentTransform.position;
@@ -28,9 +29,11 @@ public class SeparationSteering
             neighbors = Physics.OverlapSphere(agentTransform.position, separationRadius, ~0, QueryTriggerInteraction.Ignore);
         }
 
+        //SUMA LOS VECTORES DE SEPARACIÓN DE LOS VECINOS
         Vector3 separationVector = Vector3.zero;
         int count = 0;
 
+        //FOR PARA SUMAR LOS VECTORES
         for (int i = 0; i < neighbors.Length; i++)
         {
             Collider col = neighbors[i];
@@ -52,6 +55,7 @@ public class SeparationSteering
             }
         }
 
+        //PROMEDIO DE LOS VECTORES
         if (count > 0)
         {
             separationVector /= count;

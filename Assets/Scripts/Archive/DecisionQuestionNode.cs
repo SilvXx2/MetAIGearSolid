@@ -1,5 +1,6 @@
 using System;
 
+// Preguntas del arbol
 public class DecisionQuestionNode : IDecisionNode
 {
     private Func<bool> question;
@@ -13,11 +14,13 @@ public class DecisionQuestionNode : IDecisionNode
         this.falseNode = falseNode;
     }
 
+    // Depende la condicion va para un lado o otro
     public void Execute()
     {
-        if(question.Invoke())
+        if (question.Invoke())
             trueNode.Execute();
         else
             falseNode.Execute();
     }
 }
+

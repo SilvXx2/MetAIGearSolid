@@ -16,9 +16,12 @@ public class EnemyDecisionTreeController : EnemyController
     [SerializeField] private float currentReloadTimer = 0f;
 
     public IState AttackState { get; private set; }
+    // Nodo raiz del arbol
     private IDecisionNode rootNode;
+    // Efecto visual al atacar
     private IAttackEffect attackEffect;
 
+    // Estado de Ataque y visual
     protected override void InitializeStates()
     {
         base.InitializeStates();
@@ -40,10 +43,12 @@ public class EnemyDecisionTreeController : EnemyController
 
     protected override void Update()
     {
+        //Arbol en cada frame
         rootNode?.Execute();
         base.Update();
     }
 
+    // Preguntas del Arbol de abajo hacia atras
     private void BuildDecisionTree()
     {
         var accionAtacar = new DecisionActionNode(() => SetDecisionState(AttackState, "Atacar"));
@@ -52,11 +57,13 @@ public class EnemyDecisionTreeController : EnemyController
         var accionHuirRecargar = new DecisionActionNode(DecisionHuirYRecargar);
         var accionBuscarArma = new DecisionActionNode(DecisionBuscarArma);
 
+        // Direccion del arbol
         var preguntaEstoyCerca = new DecisionQuestionNode(IsCloseToPlayer, accionAtacar, accionAcercarme);
         var preguntaVeoAlJugador = new DecisionQuestionNode(() => Vision != null && Vision.CanSeeTarget, preguntaEstoyCerca, accionSeguirPatrullando);
         var preguntaTengoMunicion = new DecisionQuestionNode(() => currentAmmo > 0, preguntaVeoAlJugador, accionHuirRecargar);
         var preguntaTengoArma = new DecisionQuestionNode(() => hasWeapon, preguntaTengoMunicion, accionBuscarArma);
 
+        // Arranca aca
         rootNode = preguntaTengoArma;
     }
 
@@ -70,6 +77,7 @@ public class EnemyDecisionTreeController : EnemyController
         return toTarget.sqrMagnitude <= (attackDistance * attackDistance);
     }
 
+    // Cambio state segun arbol
     private void SetDecisionState(IState state, string decisionName)
     {
         lastDecision = decisionName;
@@ -128,6 +136,7 @@ public class EnemyDecisionTreeController : EnemyController
         currentAmmo = maxAmmo;
     }
 
+    // Gasto un golpe al atacar (se cansa de tanto pegar el type)
     private void OnEnemyAttacked()
     {
         if (currentAmmo > 0) currentAmmo--;
@@ -147,3 +156,4 @@ public class EnemyDecisionTreeController : EnemyController
         }
     }
 }
+

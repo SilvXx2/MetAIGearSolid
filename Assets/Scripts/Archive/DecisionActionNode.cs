@@ -8,8 +8,11 @@ public class DecisionActionNode : IDecisionNode
     {
         this.action = action;
     }
+
+    // Ejecuta la accion que recibe
     public void Execute()
     {
         action.Invoke();
     }
 }
+

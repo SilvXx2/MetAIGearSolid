@@ -1,12 +1,19 @@
 using UnityEngine;
 
+// Vision del enemigo
 public class EnemyLineOfSightSensor : MonoBehaviour, IVisionSensor
 {
     [SerializeField] private Transform target;
+
     [SerializeField] private float visionDistance = 10f;
+
+    //Cono (Rango) de vision
     [Range(0f, 360f)]
     [SerializeField] private float visionAngle = 90f;
+
+    // Altura de los ojos
     [SerializeField] private Vector3 eyeOffset = new Vector3(0f, 1f, 0f);
+
     [SerializeField] private LayerMask obstacleMask;
 
     public bool CanSeeTarget => CheckLineOfSight();
@@ -17,6 +24,7 @@ public class EnemyLineOfSightSensor : MonoBehaviour, IVisionSensor
         if (target == null) target = FindFirstObjectByType<PlayerMovement>()?.transform;
     }
 
+    // Chequeo distancia, angulo y que no haya paredes
     private bool CheckLineOfSight()
     {
         if (target == null)
@@ -35,12 +43,13 @@ public class EnemyLineOfSightSensor : MonoBehaviour, IVisionSensor
         Vector3 horizontalDir = new Vector3(toTarget.x, 0f, toTarget.z).normalized;
         Vector3 horizontalForward = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
 
+        // Fuera de Rango de vision no lo veo
         if (horizontalDir != Vector3.zero && horizontalForward != Vector3.zero)
         {
             if (Vector3.Angle(horizontalForward, horizontalDir) > visionAngle / 2f) return false;
         }
 
-        if (obstacleMask != 0)
+        // Chusmea si hay pared o no
         {
             if (Physics.Raycast(origin, toTarget.normalized, out RaycastHit hit, distance, obstacleMask))
             {
@@ -48,6 +57,7 @@ public class EnemyLineOfSightSensor : MonoBehaviour, IVisionSensor
             }
         }
 
+        // Lo veo
         return true;
     }
 
@@ -73,3 +83,4 @@ public class EnemyLineOfSightSensor : MonoBehaviour, IVisionSensor
         }
     }
 }
+

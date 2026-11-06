@@ -331,6 +331,7 @@ MonoBehaviour:
   loseTargetTime: 3
   visionSensor: {fileID: 6882387096455931232}
   avoidanceSensor: {fileID: 1537481481623706477}
+  pathNavigator: {fileID: 0}
   rb: {fileID: 5317262529949821009}
   hasWeapon: 1
   maxAmmo: 5

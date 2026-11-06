@@ -120,6 +120,10 @@ public class PathMaker : MonoBehaviour, IPathMaker
     {
         if (_grid == null || _grid.nodeGrid == null) return null;
 
+        float nodeStep = Mathf.Max(1f, _grid.distance);
+        float maxSnapDistance = nodeStep * 2.75f;
+        float maxSnapDistSqr = maxSnapDistance * maxSnapDistance;
+
         Node closestVisible = null;
         float minVisibleDistSqr = float.MaxValue;
 
@@ -133,6 +137,7 @@ public class PathMaker : MonoBehaviour, IPathMaker
             Vector3 diff = n.transform.position - pos;
             diff.y = 0f;
             float distSqr = diff.sqrMagnitude;
+            if (distSqr > maxSnapDistSqr) continue;
 
             if (distSqr < minFallbackDistSqr)
             {
@@ -140,7 +145,8 @@ public class PathMaker : MonoBehaviour, IPathMaker
                 minFallbackDistSqr = distSqr;
             }
 
-            if (distSqr < minVisibleDistSqr && HasLineOfSight(pos, n.Position))
+            Vector3 fromOrigin = new Vector3(pos.x, n.Position.y, pos.z);
+            if (distSqr < minVisibleDistSqr && HasLineOfSight(fromOrigin, n.Position))
             {
                 closestVisible = n;
                 minVisibleDistSqr = distSqr;

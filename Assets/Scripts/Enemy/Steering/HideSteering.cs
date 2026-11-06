@@ -8,6 +8,8 @@ public class HideSteering
     private readonly float coverOffset;
     private readonly float slowingDistance;
     private readonly float arrivalThreshold;
+    private readonly Evade evadeSteering;
+    private readonly Arrive arriveSteering;
 
     private Vector3 lastChosenSpot;
     private bool hasHidingSpot;
@@ -26,6 +28,8 @@ public class HideSteering
         this.coverOffset = coverOffset;
         this.slowingDistance = slowingDistance;
         this.arrivalThreshold = arrivalThreshold;
+        this.evadeSteering = new Evade(agentTransform, null, 1.5f);
+        this.arriveSteering = new Arrive(agentTransform, slowingDistance, arrivalThreshold);
     }
 
     //CALCULA LA DIRECCIÓN PARA OCULTARSE
@@ -77,11 +81,7 @@ public class HideSteering
         if (bestObstacle == null)
         {
             hasHidingSpot = false;
-            float lookAheadTime = Mathf.Clamp(Vector3.Distance(agentPos, targetPosition) / Mathf.Max(agentSpeed, 0.1f), 0.1f, 1.5f);
-            Vector3 predictedTargetPos = targetPosition + targetVelocity * lookAheadTime;
-            predictedTargetPos.y = agentPos.y;
-
-            Vector3 evadeDir = (agentPos - predictedTargetPos).normalized;
+            Vector3 evadeDir = evadeSteering.CalculateEvadeDirection(targetPosition, targetVelocity, agentSpeed);
             if (avoidanceSensor != null)
             {
                 evadeDir = avoidanceSensor.GetSteeredDirection(evadeDir);
@@ -93,27 +93,8 @@ public class HideSteering
         hasHidingSpot = true;
         lastChosenSpot = bestHidingSpot;
 
-        Vector3 toSpot = bestHidingSpot - agentPos;
-        toSpot.y = 0f;
-        float distance = toSpot.magnitude;
-
         //SI LLEGA AL OBSTACULO, SE PARA
-        if (distance <= arrivalThreshold)
-        {
-            return Vector3.zero;
-        }
-
-        float speedFactor = (distance > slowingDistance)
-            ? 1f
-            : Mathf.Clamp01(distance / slowingDistance);
-
-        Vector3 desiredDirection = toSpot.normalized;
-
-        Vector3 finalDirection = avoidanceSensor != null
-            ? avoidanceSensor.GetSteeredDirection(desiredDirection)
-            : desiredDirection;
-
-        return finalDirection * speedFactor;
+        return arriveSteering.CalculateArriveVelocityFactor(bestHidingSpot, avoidanceSensor);
     }
 
     //DIBUJA LOS GIZMOS PARA VER MEJOR

@@ -18,10 +18,26 @@ public class EnemyLineOfSightSensor : MonoBehaviour, IVisionSensor
 
     public bool CanSeeTarget => CheckLineOfSight();
     public Transform Target => target;
+    public float VisionDistance => visionDistance;
+    public float VisionAngle => visionAngle;
+    public Vector3 EyeOffset => eyeOffset;
+    public LayerMask ObstacleMask => obstacleMask;
 
     private void Awake()
     {
         if (target == null) target = FindFirstObjectByType<PlayerMovement>()?.transform;
+    }
+
+    public bool HasLineOfSight(Vector3 from, Vector3 to)
+    {
+        return !Physics.Linecast(from, to, obstacleMask, QueryTriggerInteraction.Ignore);
+    }
+
+    public bool CanSeePosition(Vector3 targetPosition)
+    {
+        Vector3 origin = transform.position + eyeOffset;
+        Vector3 targetPoint = targetPosition + eyeOffset;
+        return HasLineOfSight(origin, targetPoint);
     }
 
     // Chequeo distancia, angulo y que no haya paredes

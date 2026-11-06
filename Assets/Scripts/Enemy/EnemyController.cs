@@ -12,12 +12,14 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
     [SerializeField] private float loseTargetTime = 3f;
     [SerializeField] private EnemyLineOfSightSensor visionSensor;
     [SerializeField] private EnemyObstacleAvoidanceSensor avoidanceSensor;
+    [SerializeField] private EnemyPathNavigator pathNavigator;
     [SerializeField] private Rigidbody rb;
 
     public StateMachine StateMachine { get; private set; }
     public IMover Mover => this;
     public IVisionSensor Vision => visionSensor;
     public IAvoidanceSensor Avoidance => avoidanceSensor;
+    public IPathNavigator PathNavigator => pathNavigator;
     public IState PatrolState { get; protected set; }
     public IState IdleState { get; protected set; }
     public IState ChaseState { get; protected set; }
@@ -42,6 +44,8 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
 
         if (visionSensor == null) visionSensor = gameObject.AddComponent<EnemyLineOfSightSensor>();
         if (avoidanceSensor == null) avoidanceSensor = gameObject.AddComponent<EnemyObstacleAvoidanceSensor>();
+        if (pathNavigator == null) pathNavigator = gameObject.AddComponent<EnemyPathNavigator>();
+        pathNavigator.Initialize(visionSensor, avoidanceSensor);
 
         Collider col = GetComponent<Collider>();
         if (col != null)
@@ -87,6 +91,7 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
         if (rb == null) rb = GetComponent<Rigidbody>();
         if (visionSensor == null) visionSensor = GetComponent<EnemyLineOfSightSensor>();
         if (avoidanceSensor == null) avoidanceSensor = GetComponent<EnemyObstacleAvoidanceSensor>();
+        if (pathNavigator == null) pathNavigator = GetComponent<EnemyPathNavigator>();
     }
 
     public void Move(Vector3 direction, float speed)

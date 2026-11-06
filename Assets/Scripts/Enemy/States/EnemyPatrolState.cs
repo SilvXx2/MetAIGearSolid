@@ -3,16 +3,19 @@ using UnityEngine;
 public class EnemyPatrolState : IState
 {
     private readonly IEnemyContext context;
+    private readonly Seek seekSteering;
     private int currentIndex = -1;
     private int patrolDirection = 1;
 
     public EnemyPatrolState(IEnemyContext context)
     {
         this.context = context;
+        this.seekSteering = new Seek(context.Transform);
     }
 
     public void Enter()
     {
+        context.PathNavigator?.ClearPath();
         if (context.Waypoints == null || context.Waypoints.Length == 0) return;
 
         if (currentIndex < 0 || currentIndex >= context.Waypoints.Length)
@@ -92,10 +95,20 @@ public class EnemyPatrolState : IState
             return;
         }
 
-        Vector3 desiredDirection = toWaypoint.normalized;
-        Vector3 moveDirection = context.Avoidance != null
-            ? context.Avoidance.GetSteeredDirection(desiredDirection)
-            : desiredDirection;
+        seekSteering.Target = targetWaypoint;
+
+        Vector3 moveDirection;
+        if (context.PathNavigator != null)
+        {
+            moveDirection = context.PathNavigator.GetMoveDirection(targetWaypoint.position, seekSteering);
+        }
+        else
+        {
+            Vector3 desiredDirection = seekSteering.GetDir();
+            moveDirection = context.Avoidance != null
+                ? context.Avoidance.GetSteeredDirection(desiredDirection)
+                : desiredDirection;
+        }
 
         context.Mover.Move(moveDirection, context.PatrolSpeed);
         context.Mover.Rotate(moveDirection);
@@ -103,6 +116,7 @@ public class EnemyPatrolState : IState
 
     public void Exit()
     {
+        context.PathNavigator?.ClearPath();
         context.Mover.Move(Vector3.zero, 0f);
     }
 }

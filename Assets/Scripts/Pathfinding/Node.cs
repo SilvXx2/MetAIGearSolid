@@ -63,7 +63,7 @@ namespace Pathfinding
         public void CheckBlockedByWall(LayerMask wallMask, float checkRadius = 0.4f)
         {
             if (wallMask.value == 0) return;
-            blocked = Physics.CheckSphere(transform.position, checkRadius, wallMask, QueryTriggerInteraction.Ignore);
+            blocked = Physics.CheckSphere(transform.position + Vector3.up * 0.5f, checkRadius, wallMask, QueryTriggerInteraction.Ignore);
             UpdateVisualColor();
         }
 

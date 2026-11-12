@@ -59,12 +59,25 @@ public class EnemyDecisionTreeController : EnemyController
 
         // Direccion del arbol
         var preguntaEstoyCerca = new DecisionQuestionNode(IsCloseToPlayer, accionAtacar, accionAcercarme);
-        var preguntaVeoAlJugador = new DecisionQuestionNode(() => Vision != null && Vision.CanSeeTarget, preguntaEstoyCerca, accionSeguirPatrullando);
+        var preguntaVeoAlJugador = new DecisionQuestionNode(ShouldEngagePlayer, preguntaEstoyCerca, accionSeguirPatrullando);
         var preguntaTengoMunicion = new DecisionQuestionNode(() => currentAmmo > 0, preguntaVeoAlJugador, accionHuirRecargar);
         var preguntaTengoArma = new DecisionQuestionNode(() => hasWeapon, preguntaTengoMunicion, accionBuscarArma);
 
         // Arranca aca
         rootNode = preguntaTengoArma;
+    }
+
+    private bool ShouldEngagePlayer()
+    {
+        if (Vision == null || Vision.Target == null) return false;
+
+        // Si lo ve actualmente en el cono de visión, entra/mantiene persecución o ataque
+        if (Vision.CanSeeTarget) return true;
+
+        // Si ya lo había detectado y está buscándolo/persiguiéndolo con Pathfinding (Theta*) o saliendo de ataque,
+        // mantenemos la rama activa hasta que EnemyChaseState agote su búsqueda y vuelva a PatrolState.
+        return StateMachine != null &&
+               (StateMachine.CurrentState == ChaseState || StateMachine.CurrentState == AttackState);
     }
 
     private bool IsCloseToPlayer()
@@ -74,7 +87,9 @@ public class EnemyDecisionTreeController : EnemyController
 
         Vector3 toTarget = target.position - transform.position;
         toTarget.y = 0f;
-        return toTarget.sqrMagnitude <= (attackDistance * attackDistance);
+        if (toTarget.sqrMagnitude > (attackDistance * attackDistance)) return false;
+
+        return Vision.CanSeePosition(target.position);
     }
 
     // Cambio state segun arbol
@@ -124,9 +139,17 @@ public class EnemyDecisionTreeController : EnemyController
 
         if (weaponSpawnPoint != null && Vector3.Distance(transform.position, weaponSpawnPoint.position) > 1.5f)
         {
-            Vector3 desiredDir = (weaponSpawnPoint.position - transform.position).normalized;
-            desiredDir.y = 0f;
-            Vector3 moveDir = Avoidance != null ? Avoidance.GetSteeredDirection(desiredDir) : desiredDir;
+            Vector3 moveDir;
+            if (PathNavigator != null)
+            {
+                moveDir = PathNavigator.GetMoveDirection(weaponSpawnPoint.position);
+            }
+            else
+            {
+                Vector3 desiredDir = (weaponSpawnPoint.position - transform.position).normalized;
+                desiredDir.y = 0f;
+                moveDir = Avoidance != null ? Avoidance.GetSteeredDirection(desiredDir) : desiredDir;
+            }
             Mover.Move(moveDir, PatrolSpeed);
             Mover.Rotate(moveDir);
             return;

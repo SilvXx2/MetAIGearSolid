@@ -222,7 +222,7 @@ namespace Pathfinding
 
             for (int i = 1; i < path.Count - 1; i++)
             {
-                if (!LineOfSight(smoothPath[current].Position, path[i + 1].Position, mask))
+                if (!LineOfSight(smoothPath[current].Position, path[i + 1].Position, mask, true))
                 {
                     current++;
                     smoothPath.Add(path[i]);
@@ -232,9 +232,31 @@ namespace Pathfinding
             return smoothPath;
         }
 
-        private static bool LineOfSight(Vector3 a, Vector3 b, LayerMask mask)
+        private const float NodeLoSHeightOffset = 0.5f;
+        private const float NodeCornerClearanceRadius = 0.3f;
+
+        private static bool LineOfSight(Vector3 a, Vector3 b, LayerMask mask, bool checkCornerClearance = false)
         {
-            return !Physics.Linecast(a, b, mask, QueryTriggerInteraction.Ignore);
+            Vector3 origin = a + Vector3.up * NodeLoSHeightOffset;
+            Vector3 dest = b + Vector3.up * NodeLoSHeightOffset;
+
+            if (Physics.Linecast(origin, dest, mask, QueryTriggerInteraction.Ignore))
+            {
+                return false;
+            }
+
+            if (checkCornerClearance)
+            {
+                Vector3 toDest = dest - origin;
+                float dist = toDest.magnitude;
+                if (dist > 0.001f &&
+                    Physics.SphereCast(origin, NodeCornerClearanceRadius, toDest / dist, out _, dist, mask, QueryTriggerInteraction.Ignore))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public static List<Node> ThetaStar(Node start, Node goal, LayerMask mask)
@@ -256,11 +278,11 @@ namespace Pathfinding
                 visited.Add(current);
                 foreach (var next in current.Neighbors)
                 {
-                    if (next == null || next.Blocked || !LineOfSight(current.Position, next.Position, mask)) continue;
-                    // InView
+                    if (next == null || next.Blocked || !LineOfSight(current.Position, next.Position, mask, false)) continue;
+                    // InView (con margen de esquina para que Theta* no corte esquinas de paredes en diagonal)
                     var realParent = current;
                     if (cameFrom.ContainsKey(current) && cameFrom[current] != null &&
-                        LineOfSight(cameFrom[current].Position, next.Position, mask))
+                        LineOfSight(cameFrom[current].Position, next.Position, mask, true))
                     {
                         realParent = cameFrom[current];
                     }

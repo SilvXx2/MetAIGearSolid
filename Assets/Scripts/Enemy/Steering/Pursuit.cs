@@ -90,14 +90,31 @@ public class Pursuit : ISteering
 
         if (distance <= 0.001f) return Vector3.zero;
 
-        float predictionTime = Mathf.Clamp(distance / Mathf.Max(referenceSpeed, 0.1f), 0.1f, maxPredictionTime);
-        Vector3 futurePosition = currentTargetPos + targetVelocity * predictionTime;
+        Vector3 dirToTarget = toTarget / distance;
+        float targetSpeed = targetVelocity.magnitude;
+
+        // Si el objetivo está quieto o se mueve hacia el enemigo, ir directo hacia él
+        // para no predecir una posición futura detrás del propio enemigo (que lo hacía darse vuelta).
+        if (targetSpeed <= 0.05f || Vector3.Dot(dirToTarget, targetVelocity / targetSpeed) < -0.25f)
+        {
+            return dirToTarget;
+        }
+
+        float combinedSpeed = referenceSpeed + targetSpeed;
+        float predictionTime = Mathf.Clamp(distance / Mathf.Max(combinedSpeed, 0.1f), 0.05f, maxPredictionTime);
+        Vector3 predictedOffset = Vector3.ClampMagnitude(targetVelocity * predictionTime, distance * 0.6f);
+        Vector3 futurePosition = currentTargetPos + predictedOffset;
         futurePosition.y = self.position.y;
 
         Vector3 desiredDirection = futurePosition - self.position;
         desiredDirection.y = 0f;
 
-        return desiredDirection.sqrMagnitude > 0.0001f ? desiredDirection.normalized : toTarget.normalized;
+        if (desiredDirection.sqrMagnitude <= 0.0001f || Vector3.Dot(desiredDirection.normalized, dirToTarget) < 0.2f)
+        {
+            return dirToTarget;
+        }
+
+        return desiredDirection.normalized;
     }
 
     private Vector3 CalculateTargetVelocity(Vector3 currentTargetPos)

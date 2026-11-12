@@ -32,9 +32,29 @@ public class PathMaker : MonoBehaviour, IPathMaker
         }
     }
 
+    private const float LoSClearanceRadius = 0.25f;
+
     public bool HasLineOfSight(Vector3 from, Vector3 to)
     {
-        return !Physics.Linecast(from, to, wallMask, QueryTriggerInteraction.Ignore);
+        Vector3 origin = from.y < 0.8f ? from + Vector3.up * 0.5f : from;
+        Vector3 dest = to.y < 0.8f ? to + Vector3.up * 0.5f : to;
+
+        if (Physics.Linecast(origin, dest, wallMask, QueryTriggerInteraction.Ignore))
+        {
+            return false;
+        }
+
+        Vector3 toDest = dest - origin;
+        float dist = toDest.magnitude;
+        if (dist > 0.001f)
+        {
+            if (Physics.SphereCast(origin, LoSClearanceRadius, toDest / dist, out _, dist, wallMask, QueryTriggerInteraction.Ignore))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public List<Node> CreatePath(Vector3 startPos, Vector3 goalPos, Func<Node, bool> itFulfills = null)
@@ -106,7 +126,9 @@ public class PathMaker : MonoBehaviour, IPathMaker
     private bool IsRecheable(Node current, Node next)
     {
         if (current == null || next == null || next.Blocked) return false;
-        if (Physics.Linecast(current.Position, next.Position, wallMask, QueryTriggerInteraction.Ignore)) return false;
+        Vector3 from = current.Position + Vector3.up * 0.5f;
+        Vector3 to = next.Position + Vector3.up * 0.5f;
+        if (Physics.Linecast(from, to, wallMask, QueryTriggerInteraction.Ignore)) return false;
         return true;
     }
 
@@ -121,7 +143,7 @@ public class PathMaker : MonoBehaviour, IPathMaker
         if (_grid == null || _grid.nodeGrid == null) return null;
 
         float nodeStep = Mathf.Max(1f, _grid.distance);
-        float maxSnapDistance = nodeStep * 2.75f;
+        float maxSnapDistance = nodeStep * 4f;
         float maxSnapDistSqr = maxSnapDistance * maxSnapDistance;
 
         Node closestVisible = null;
@@ -145,8 +167,9 @@ public class PathMaker : MonoBehaviour, IPathMaker
                 minFallbackDistSqr = distSqr;
             }
 
-            Vector3 fromOrigin = new Vector3(pos.x, n.Position.y, pos.z);
-            if (distSqr < minVisibleDistSqr && HasLineOfSight(fromOrigin, n.Position))
+            Vector3 fromOrigin = new Vector3(pos.x, n.Position.y + 0.5f, pos.z);
+            Vector3 nodePoint = n.Position + Vector3.up * 0.5f;
+            if (distSqr < minVisibleDistSqr && !Physics.Linecast(fromOrigin, nodePoint, wallMask, QueryTriggerInteraction.Ignore))
             {
                 closestVisible = n;
                 minVisibleDistSqr = distSqr;

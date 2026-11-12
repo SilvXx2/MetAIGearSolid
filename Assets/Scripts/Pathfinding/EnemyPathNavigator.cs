@@ -62,6 +62,12 @@ public class EnemyPathNavigator : MonoBehaviour, IPathNavigator
                 ? directSteering.GetDir()
                 : GetFlatDirection(transform.position, targetPosition);
 
+            // Si la predicción de Pursuit apunta hacia una pared pero el objetivo es visible directo, ir hacia el objetivo
+            if (desiredDir != Vector3.zero && !HasLineOfSightTo(transform.position + desiredDir * 2f))
+            {
+                desiredDir = GetFlatDirection(transform.position, targetPosition);
+            }
+
             return ApplyAvoidance(desiredDir);
         }
 
@@ -140,19 +146,12 @@ public class EnemyPathNavigator : MonoBehaviour, IPathNavigator
                 continue;
             }
 
-            // Si el siguiente nodo en la lista ya es visible directamente y está más cerca del objetivo, avanzamos (Theta* smoothing)
+            // Theta* smoothing dinámico: si el siguiente nodo en la lista ya tiene línea de visión directa
+            // desde la posición actual del agente, salteamos path[0] para evitar retroceder al nodo inicial.
             if (path.Count > 1 && path[1] != null && HasLineOfSightTo(path[1].Position))
             {
-                Vector3 toCurrent = path[0].Position - path[1].Position;
-                toCurrent.y = 0f;
-                Vector3 agentToNext = path[1].Position - transform.position;
-                agentToNext.y = 0f;
-
-                if (agentToNext.sqrMagnitude < toCurrent.sqrMagnitude)
-                {
-                    path.RemoveAt(0);
-                    continue;
-                }
+                path.RemoveAt(0);
+                continue;
             }
 
             break;

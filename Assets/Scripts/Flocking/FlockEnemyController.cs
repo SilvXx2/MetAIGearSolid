@@ -16,22 +16,8 @@ public class FlockEnemyController : EnemyController, IBoid, IFlockContext
     public Vector3 Forward => transform.forward;
 
     public ISteering FlockingSteering => flockingManager;
-    public Transform Leader
-    {
-        get => leader;
-        set
-        {
-            leader = value;
-            var leaderBeh = GetComponent<LeaderBehaviour>();
-            if (leaderBeh != null)
-            {
-                leaderBeh.SetTarget(leader);
-            }
-        }
-    }
-
+    public Transform Leader => leader;
     public float LeaderStoppingDistance => leaderStoppingDistance;
-    public IState FlockState { get; private set; }
 
     public override IState AlertState => fleeOnPlayerDetected ? RunAwayState : ChaseState;
     protected override float SafeDistance => safeDistance;
@@ -45,9 +31,8 @@ public class FlockEnemyController : EnemyController, IBoid, IFlockContext
     protected override void InitializeStates()
     {
         base.InitializeStates();
-        FlockState = new EnemyFlockState(this);
-        // LSP: asignamos FlockState como estado base de retorno para que al terminar de huir o perseguir vuelva al Flocking
-        PatrolState = FlockState;
+        // LSP: asignamos EnemyFlockState como estado base de retorno para que al terminar de huir o perseguir vuelva al Flocking
+        PatrolState = new EnemyFlockState(this);
     }
 
     private void EnsureFlockingComponents()

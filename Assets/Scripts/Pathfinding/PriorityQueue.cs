@@ -16,13 +16,6 @@ public class PriorityQueue<TData>
         critery = (x, y) => x.CompareTo(y) < 0;
     }
 
-    public PriorityQueue(Func<float, float, bool> critery)
-    {
-        data = new List<Tuple<TData, float>>();
-        indexes = new Dictionary<TData, int>();
-        this.critery = critery;
-    }
-
     public void Enqueue(TData data, float priority)
     {
         Enqueue(new Tuple<TData, float>(data, priority));
@@ -59,34 +52,6 @@ public class PriorityQueue<TData>
             currentIndex = parentIndex;
             parentIndex = (currentIndex - 1) / 2;
         }
-    }
-
-    private void EnqueueData(Tuple<TData, float> dp)
-    {
-        data.Add(dp);
-
-        int currentIndex = data.Count - 1; // La posicion del dato recien ingresado en la lista.
-        int parentIndex = (currentIndex - 1) / 2; // La posicion del nodo padre en la lista.
-
-        indexes.Add(dp.Item1, currentIndex);
-
-        while (currentIndex > 0 && critery(data[currentIndex].Item2, data[parentIndex].Item2))
-        {
-            Swap(currentIndex, parentIndex);
-
-            currentIndex = parentIndex;
-            parentIndex = (currentIndex - 1) / 2;
-        }
-    }
-
-    public TData Peek()
-    {
-        return PeekTuple().Item1;
-    }
-
-    public Tuple<TData, float> PeekTuple()
-    {
-        return data[0];
     }
 
     public TData Dequeue()

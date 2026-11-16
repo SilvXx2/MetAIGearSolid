@@ -1624,6 +1624,14 @@ PrefabInstance:
       value: Guardian (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: enemyWeapon
+      value: 
+      objectReference: {fileID: 309749861}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: weaponSpawnPoint
+      value: 
+      objectReference: {fileID: 1990869850}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 693695048}
@@ -1686,8 +1694,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 309749861}
   m_SourcePrefab: {fileID: 100100000, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+--- !u!1 &132899965 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+  m_PrefabInstance: {fileID: 132899964}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &133942202
 GameObject:
   m_ObjectHideFlags: 0
@@ -1944,6 +1960,14 @@ PrefabInstance:
       value: Guardian (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: enemyWeapon
+      value: 
+      objectReference: {fileID: 148058010}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: weaponSpawnPoint
+      value: 
+      objectReference: {fileID: 1990869850}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 790010639}
@@ -2006,13 +2030,41 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 148058010}
   m_SourcePrefab: {fileID: 100100000, guid: 2d1026f16de258341a46f2336d989094, type: 3}
 --- !u!4 &148058008 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5266405692156091395, guid: 2d1026f16de258341a46f2336d989094, type: 3}
   m_PrefabInstance: {fileID: 148058007}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &148058009 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+  m_PrefabInstance: {fileID: 148058007}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &148058010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 148058009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  weaponName: "Rifle T\xE1ctico"
+  maxAmmo: 5
+  currentAmmo: 5
+  attackRange: 2.5
+  attackCooldown: 1.2
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 0}
 --- !u!1 &150914205
 GameObject:
   m_ObjectHideFlags: 0
@@ -4096,6 +4148,26 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5266405692156091395, guid: 2d1026f16de258341a46f2336d989094, type: 3}
   m_PrefabInstance: {fileID: 132899964}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &309749861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 132899965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  weaponName: "Rifle T\xE1ctico"
+  maxAmmo: 5
+  currentAmmo: 5
+  attackRange: 2.5
+  attackCooldown: 1.2
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 0}
 --- !u!1 &310962110
 GameObject:
   m_ObjectHideFlags: 0
@@ -4927,6 +4999,14 @@ PrefabInstance:
       value: Guardian (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: enemyWeapon
+      value: 
+      objectReference: {fileID: 361162208}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: weaponSpawnPoint
+      value: 
+      objectReference: {fileID: 1990869850}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 1165428868}
@@ -4989,13 +5069,41 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 361162208}
   m_SourcePrefab: {fileID: 100100000, guid: 2d1026f16de258341a46f2336d989094, type: 3}
 --- !u!4 &361162206 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5266405692156091395, guid: 2d1026f16de258341a46f2336d989094, type: 3}
   m_PrefabInstance: {fileID: 361162205}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &361162207 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+  m_PrefabInstance: {fileID: 361162205}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &361162208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361162207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  weaponName: "Rifle T\xE1ctico"
+  maxAmmo: 5
+  currentAmmo: 5
+  attackRange: 2.5
+  attackCooldown: 1.2
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 0}
 --- !u!1 &361447637
 GameObject:
   m_ObjectHideFlags: 0
@@ -6648,6 +6756,14 @@ PrefabInstance:
       value: Guardian (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: enemyWeapon
+      value: 
+      objectReference: {fileID: 474674166}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: weaponSpawnPoint
+      value: 
+      objectReference: {fileID: 1990869850}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 1844915774}
@@ -6710,13 +6826,41 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 474674166}
   m_SourcePrefab: {fileID: 100100000, guid: 2d1026f16de258341a46f2336d989094, type: 3}
 --- !u!4 &474674164 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5266405692156091395, guid: 2d1026f16de258341a46f2336d989094, type: 3}
   m_PrefabInstance: {fileID: 474674163}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &474674165 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+  m_PrefabInstance: {fileID: 474674163}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &474674166
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 474674165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  weaponName: "Rifle T\xE1ctico"
+  maxAmmo: 5
+  currentAmmo: 5
+  attackRange: 2.5
+  attackCooldown: 1.2
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 0}
 --- !u!1 &481689189
 GameObject:
   m_ObjectHideFlags: 0
@@ -7001,6 +7145,14 @@ PrefabInstance:
       value: Guardian (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: enemyWeapon
+      value: 
+      objectReference: {fileID: 501234320}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: weaponSpawnPoint
+      value: 
+      objectReference: {fileID: 1990869850}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 1881685974}
@@ -7063,8 +7215,36 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 501234320}
   m_SourcePrefab: {fileID: 100100000, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+--- !u!1 &501234319 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+  m_PrefabInstance: {fileID: 501234318}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &501234320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 501234319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  weaponName: "Rifle T\xE1ctico"
+  maxAmmo: 5
+  currentAmmo: 5
+  attackRange: 2.5
+  attackCooldown: 1.2
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 0}
 --- !u!1 &507671923
 GameObject:
   m_ObjectHideFlags: 0
@@ -15208,6 +15388,14 @@ PrefabInstance:
       value: Guardian (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: enemyWeapon
+      value: 
+      objectReference: {fileID: 999443179}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: weaponSpawnPoint
+      value: 
+      objectReference: {fileID: 1990869850}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 425365025}
@@ -15270,8 +15458,36 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 999443179}
   m_SourcePrefab: {fileID: 100100000, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+--- !u!1 &999443178 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+  m_PrefabInstance: {fileID: 999443177}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &999443179
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 999443178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  weaponName: "Rifle T\xE1ctico"
+  maxAmmo: 5
+  currentAmmo: 5
+  attackRange: 2.5
+  attackCooldown: 1.2
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 0}
 --- !u!1 &1001688034
 GameObject:
   m_ObjectHideFlags: 0
@@ -29750,6 +29966,14 @@ PrefabInstance:
       value: Guardian (1)
       objectReference: {fileID: 0}
     - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: enemyWeapon
+      value: 
+      objectReference: {fileID: 1926802762}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: weaponSpawnPoint
+      value: 
+      objectReference: {fileID: 1990869850}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 1345843867}
@@ -29812,8 +30036,36 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1926802762}
   m_SourcePrefab: {fileID: 100100000, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+--- !u!1 &1926802761 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+  m_PrefabInstance: {fileID: 1926802760}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1926802762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1926802761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  weaponName: "Rifle T\xE1ctico"
+  maxAmmo: 5
+  currentAmmo: 5
+  attackRange: 2.5
+  attackCooldown: 1.2
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 0}
 --- !u!1 &1928205157
 GameObject:
   m_ObjectHideFlags: 0
@@ -30796,6 +31048,11 @@ Transform:
   - {fileID: 436930134}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1990869850 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+  m_PrefabInstance: {fileID: 746876921359963658}
+  m_PrefabAsset: {fileID: 0}
 --- !u!134 &1995909982
 PhysicsMaterial:
   m_ObjectHideFlags: 0
@@ -32239,6 +32496,14 @@ PrefabInstance:
       value: Guardian
       objectReference: {fileID: 0}
     - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: enemyWeapon
+      value: 
+      objectReference: {fileID: 2138850039}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      propertyPath: weaponSpawnPoint
+      value: 
+      objectReference: {fileID: 1990869850}
+    - target: {fileID: 2732503136610506153, guid: 2d1026f16de258341a46f2336d989094, type: 3}
       propertyPath: 'waypoints.Array.data[0]'
       value: 
       objectReference: {fileID: 391933442}
@@ -32313,8 +32578,16 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2138850039}
   m_SourcePrefab: {fileID: 100100000, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+--- !u!1 &2093956019 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2665274237846792925, guid: 2d1026f16de258341a46f2336d989094, type: 3}
+  m_PrefabInstance: {fileID: 2093956018}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2096520500
 GameObject:
   m_ObjectHideFlags: 0
@@ -33186,6 +33459,26 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5266405692156091395, guid: 2d1026f16de258341a46f2336d989094, type: 3}
   m_PrefabInstance: {fileID: 2093956018}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2138850039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2093956019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  weaponName: "Rifle T\xE1ctico"
+  maxAmmo: 5
+  currentAmmo: 5
+  attackRange: 2.5
+  attackCooldown: 1.2
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 0}
 --- !u!1 &2139637579
 GameObject:
   m_ObjectHideFlags: 0
@@ -33348,6 +33641,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8846e1876b9a3214a8dfa473fe1f4967, type: 3}
+--- !u!1001 &746876921359963658
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 126
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -73.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 733821317104165008, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8327874636643003073, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
+      propertyPath: m_Name
+      value: WeaponStation
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 565b2e20b7e4c2945b5fc5fdee9182da, type: 3}
 --- !u!1001 &1244763918123289893
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38653,3 +39003,4 @@ SceneRoots:
   - {fileID: 827225843}
   - {fileID: 1151647354}
   - {fileID: 1244763918123289893}
+  - {fileID: 746876921359963658}

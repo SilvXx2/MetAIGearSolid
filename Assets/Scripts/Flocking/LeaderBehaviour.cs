@@ -12,27 +12,26 @@ public class LeaderBehaviour : MonoBehaviour, IFlockingBehaviour
 
     private Seek _seek;
     private Pursuit _pursuit;
-    private Arrive _arrive;
     private bool _isSeek;
 
     private void Awake()
     {
+        EnsureSteeringInitialized();
+    }
+
+    private void EnsureSteeringInitialized()
+    {
+        if (_seek != null && _pursuit != null) return;
+
         _seek = new Seek(transform, target);
         _pursuit = new Pursuit(transform, (Rigidbody)null, timePrediction);
-        _arrive = new Arrive(transform, slowingDistance, 0.5f);
         SetTarget(target);
     }
 
     public Vector3 GetDir(List<IBoid> boids, IBoid self)
     {
         if (target == null) return Vector3.zero;
-        if (_arrive == null)
-        {
-            _seek = new Seek(transform, target);
-            _pursuit = new Pursuit(transform, (Rigidbody)null, timePrediction);
-            _arrive = new Arrive(transform, slowingDistance, 0.5f);
-            SetTarget(target);
-        }
+        EnsureSteeringInitialized();
 
         // Punto de seguimiento ligeramente detrás del líder, con fallback a la posición exacta del líder
         Vector3 followPoint = target.position - target.forward * followBehindOffset;
@@ -56,6 +55,13 @@ public class LeaderBehaviour : MonoBehaviour, IFlockingBehaviour
     {
         if (newTarget == null) return;
         target = newTarget;
+
+        if (_seek == null || _pursuit == null)
+        {
+            _seek = new Seek(transform, target);
+            _pursuit = new Pursuit(transform, (Rigidbody)null, timePrediction);
+        }
+
         var rb = newTarget.GetComponent<Rigidbody>();
         if (rb)
         {

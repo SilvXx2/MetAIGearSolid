@@ -11,14 +11,6 @@ public class PathMaker : MonoBehaviour, IPathMaker
     [SerializeField] private Pathfinding.Grid _grid;
     [SerializeField] private PathfindingAlgorithm algorithm = PathfindingAlgorithm.ThetaStar;
 
-    public PathfindingAlgorithm Algorithm
-    {
-        get => algorithm;
-        set => algorithm = value;
-    }
-
-    public LayerMask WallMask => wallMask;
-
     private void Awake()
     {
         if (instance == null)
@@ -57,7 +49,7 @@ public class PathMaker : MonoBehaviour, IPathMaker
         return true;
     }
 
-    public List<Node> CreatePath(Vector3 startPos, Vector3 goalPos, Func<Node, bool> itFulfills = null)
+    public List<Node> CreatePath(Vector3 startPos, Vector3 goalPos)
     {
         if (_grid == null || _grid.nodeGrid == null || _grid.nodeGrid.Length == 0)
         {
@@ -75,15 +67,10 @@ public class PathMaker : MonoBehaviour, IPathMaker
             return new List<Node>();
         }
 
-        if (itFulfills == null)
-        {
-            itFulfills = (n) => n == closestGoal;
-        }
-
-        return CreatePath(closestStart, closestGoal, itFulfills);
+        return CreatePath(closestStart, closestGoal);
     }
 
-    public List<Node> CreatePath(Node start, Node target, Func<Node, bool> itFulfills)
+    private List<Node> CreatePath(Node start, Node target)
     {
         if (start == null || target == null) return new List<Node>();
 
@@ -101,10 +88,9 @@ public class PathMaker : MonoBehaviour, IPathMaker
 
             case PathfindingAlgorithm.GenericAStar:
             default:
-                if (itFulfills == null) itFulfills = (n) => n == target;
                 path = GenericSearchAlgorithms.Astar(
                     start,
-                    itFulfills,
+                    (n) => n == target,
                     GetNodeNeighbors,
                     GetNodeCost,
                     (n) => GetNodeHeuristic(n, target),

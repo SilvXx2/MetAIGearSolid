@@ -6,16 +6,30 @@ public class RouletteWheelSelection<T>
 {
     public class RouletteItem
     {
+        private readonly float staticWeight;
+        private readonly Func<float> dynamicWeightProvider;
+
         //LOS ITEMS NO SE PUEDEN MODIFICAR UNA VEZ EN LA LISTA, POR ESO SON SOLO GETTERS
         public T Value { get; }
-        public float Weight { get; }
+        public float Weight => dynamicWeightProvider != null
+            ? Mathf.Max(0f, dynamicWeightProvider.Invoke())
+            : staticWeight;
         public string Description { get; }
 
         public RouletteItem(T value, float weight, string description = "")
         {
             Value = value;
             //RECORTAR LOS PESOS NEGATIVOS Y NO DEJA QUE SEA 0
-            Weight = Mathf.Max(0f, weight);
+            staticWeight = Mathf.Max(0f, weight);
+            dynamicWeightProvider = null;
+            Description = description;
+        }
+
+        public RouletteItem(T value, Func<float> weightProvider, string description = "")
+        {
+            Value = value;
+            staticWeight = 0f;
+            dynamicWeightProvider = weightProvider;
             Description = description;
         }
     }
@@ -31,6 +45,16 @@ public class RouletteWheelSelection<T>
         }
 
         items.Add(new RouletteItem(value, weight, description));
+    }
+
+    public void AddItem(T value, Func<float> weightProvider, string description = "")
+    {
+        if (weightProvider == null)
+        {
+            return;
+        }
+
+        items.Add(new RouletteItem(value, weightProvider, description));
     }
 
     public RouletteItem SelectItem()

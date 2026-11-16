@@ -18,7 +18,6 @@ public class EnemyPathNavigator : MonoBehaviour, IPathNavigator
     private bool hasLastGoal;
 
     public bool IsFollowingPath => path.Count > 0;
-    public IReadOnlyList<Node> CurrentPath => path;
 
     private IPathMaker ActivePathMaker => customPathMaker != null ? customPathMaker : PathMaker.instance;
 
@@ -28,11 +27,10 @@ public class EnemyPathNavigator : MonoBehaviour, IPathNavigator
         avoidanceSensor = GetComponent<IAvoidanceSensor>();
     }
 
-    public void Initialize(IVisionSensor vision, IAvoidanceSensor avoidance, IPathMaker pathMakerOverride = null)
+    public void Initialize(IVisionSensor vision, IAvoidanceSensor avoidance)
     {
         if (vision != null) visionSensor = vision;
         if (avoidance != null) avoidanceSensor = avoidance;
-        if (pathMakerOverride is PathMaker pm) customPathMaker = pm;
     }
 
     public bool HasLineOfSightTo(Vector3 targetPosition)

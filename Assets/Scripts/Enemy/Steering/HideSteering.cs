@@ -6,8 +6,6 @@ public class HideSteering
     private readonly LayerMask obstacleMask;
     private readonly float scanRadius;
     private readonly float coverOffset;
-    private readonly float slowingDistance;
-    private readonly float arrivalThreshold;
     private readonly Evade evadeSteering;
     private readonly Arrive arriveSteering;
 
@@ -26,8 +24,6 @@ public class HideSteering
         this.obstacleMask = obstacleMask;
         this.scanRadius = scanRadius;
         this.coverOffset = coverOffset;
-        this.slowingDistance = slowingDistance;
-        this.arrivalThreshold = arrivalThreshold;
         this.evadeSteering = new Evade(agentTransform, null, 1.5f);
         this.arriveSteering = new Arrive(agentTransform, slowingDistance, arrivalThreshold);
     }

@@ -1,28 +1,16 @@
 using UnityEngine;
 
-public class Arrive : ISteering
+public class Arrive
 {
     private readonly Transform self;
     private readonly float slowingDistance;
     private readonly float arrivalThreshold;
-    private Vector3 targetPosition;
-
-    public Vector3 TargetPosition
-    {
-        get => targetPosition;
-        set => targetPosition = value;
-    }
 
     public Arrive(Transform self, float slowingDistance = 2.5f, float arrivalThreshold = 0.6f)
     {
         this.self = self;
         this.slowingDistance = Mathf.Max(0.1f, slowingDistance);
         this.arrivalThreshold = Mathf.Max(0.05f, arrivalThreshold);
-    }
-
-    public Vector3 GetDir()
-    {
-        return CalculateArriveVelocityFactor(targetPosition, null);
     }
 
     public Vector3 CalculateArriveVelocityFactor(Vector3 destination, IAvoidanceSensor avoidanceSensor = null)

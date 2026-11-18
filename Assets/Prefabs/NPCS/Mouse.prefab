@@ -16,6 +16,9 @@ GameObject:
   - component: {fileID: 4658050790040386895}
   - component: {fileID: 4993929771870900750}
   - component: {fileID: 507184857488923000}
+  - component: {fileID: 7242524233420858665}
+  - component: {fileID: 80626167731580694}
+  - component: {fileID: 8621116012405810342}
   m_Layer: 6
   m_Name: Mouse
   m_TagString: Untagged
@@ -45,7 +48,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2931614447204069061}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 4300000, guid: 19df5a68f284337479a19030c5261ea3, type: 2}
 --- !u!23 &2601510935432855148
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -71,7 +74,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b9e6520e52c43a6409e77983c7bb1157, type: 2}
+  - {fileID: 2100000, guid: 0feab5c84d433e647bd72bf8d742422e, type: 2}
+  - {fileID: 2100000, guid: 482b634ef8738b946af384fa1e2c312e, type: 2}
+  - {fileID: 2100000, guid: 1ab3d6b3bd4f2d84dbab4173256d94ce, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -210,3 +215,56 @@ MonoBehaviour:
   leaderStoppingDistance: 2
   fleeOnPlayerDetected: 1
   safeDistance: 12
+--- !u!114 &7242524233420858665
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2931614447204069061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c117af7403598f54983293a4165713dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VisionConeMeshRenderer
+  coneMaterial: {fileID: 2100000, guid: 7d8cd0fdd920e2c4c8fd8d5996df2def, type: 2}
+  rayCount: 36
+  refreshInterval: 0.05
+  groundOffset: 0.06
+  innerAlpha: 0.55
+  outerAlpha: 0.2
+  colorLerpSpeed: 8
+--- !u!114 &80626167731580694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2931614447204069061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8a4bf35999278549af61940a0114bd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcDirectionIndicator
+  indicatorMaterial: {fileID: 2100000, guid: 7d8cd0fdd920e2c4c8fd8d5996df2def, type: 2}
+  distanceAhead: 0.35
+  size: 1
+  groundOffset: 0.08
+  hostilePulseSpeed: 10
+--- !u!114 &8621116012405810342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2931614447204069061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6c9f4d66132e6947a829b758d99c985, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcStatusView
+  heightAboveHead: 0.6
+  labelFontSize: 2.6
+  alertIconFontSize: 9
+  alertIconDuration: 1.2
+  showWeaponLine: 0

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyDecisionTreeController : EnemyController, IWeaponHolder
+public class EnemyDecisionTreeController : EnemyController, IWeaponHolder, IWeaponStatusSource
 {
     [Header("Parametros de Combate Cuerpo a Cuerpo / Arma")]
     [SerializeField] private bool hasWeapon = true;
@@ -24,6 +24,9 @@ public class EnemyDecisionTreeController : EnemyController, IWeaponHolder
     public IReloadableWeapon EquippedWeapon => enemyWeapon;
     public Transform WeaponSpawnPoint => weaponSpawnPoint;
     public int CurrentAmmo => enemyWeapon != null ? enemyWeapon.CurrentAmmo : currentAmmo;
+    public int MaxAmmo => enemyWeapon != null ? enemyWeapon.MaxAmmo : maxAmmo;
+    public bool IsReloading => StateMachine != null && ReloadState != null && StateMachine.CurrentState == ReloadState;
+    public float ReloadProgress01 => enemyWeapon != null ? Mathf.Clamp01(enemyWeapon.ReloadTimer / enemyWeapon.ReloadDuration) : 0f;
 
     // Nodo raiz del arbol
     private IDecisionNode rootNode;

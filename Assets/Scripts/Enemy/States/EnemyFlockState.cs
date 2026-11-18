@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyFlockState : IState
+public class EnemyFlockState : IState, IDescribedState
 {
     private readonly IFlockContext context;
     private readonly Seek waypointSeek;
@@ -11,6 +11,9 @@ public class EnemyFlockState : IState
         this.context = context;
         this.waypointSeek = new Seek(context.Transform);
     }
+
+    public string StatusLabel => StateLabelFormatter.WithNavigation(context.Leader != null ? "SIGUIENDO LÍDER" : "MANADA · FLOCKING", context.PathNavigator);
+    public NpcAlertLevel AlertLevel => NpcAlertLevel.Calm;
 
     public void Enter()
     {

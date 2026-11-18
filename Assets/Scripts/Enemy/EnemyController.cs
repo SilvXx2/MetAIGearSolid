@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour, IEnemyContext, IMover
+public class EnemyController : MonoBehaviour, IEnemyContext, IMover, INpcStatusSource
 {
     [SerializeField] private float patrolSpeed = 3f;
     [SerializeField] private float chaseSpeed = 6f;
@@ -31,6 +31,8 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover
     public float WaypointThreshold => waypointThreshold;
     public float LoseTargetTime => loseTargetTime;
     public Transform Transform => transform;
+    public string StatusLabel => (StateMachine?.CurrentState as IDescribedState)?.StatusLabel ?? string.Empty;
+    public NpcAlertLevel AlertLevel => (StateMachine?.CurrentState as IDescribedState)?.AlertLevel ?? NpcAlertLevel.Calm;
 
     protected virtual float SafeDistance => 12f;
 

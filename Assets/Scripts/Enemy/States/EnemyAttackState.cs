@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class EnemyAttackState : IState
+public class EnemyAttackState : IState, IDescribedState
 {
     private readonly IEnemyContext context;
     private readonly Action onAttackAction;
@@ -14,6 +14,9 @@ public class EnemyAttackState : IState
         this.onAttackAction = onAttackAction;
         this.attackCooldown = attackCooldown;
     }
+
+    public string StatusLabel => "ATAQUE";
+    public NpcAlertLevel AlertLevel => NpcAlertLevel.Hostile;
 
     public void Enter()
     {

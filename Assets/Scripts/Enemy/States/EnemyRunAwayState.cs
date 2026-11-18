@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyRunAwayState : IState
+public class EnemyRunAwayState : IState, IDescribedState
 {
     private readonly IEnemyContext context;
     private readonly float safeDistance;
@@ -34,6 +34,9 @@ public class EnemyRunAwayState : IState
             agentTransform: context.Transform,
             separationRadius: 2.0f);
     }
+
+    public string StatusLabel => StateLabelFormatter.WithNavigation("HUYENDO · HIDE/EVADE", context.PathNavigator);
+    public NpcAlertLevel AlertLevel => NpcAlertLevel.Fleeing;
 
     public void Enter()
     {

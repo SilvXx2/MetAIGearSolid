@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyChaseState : IState
+public class EnemyChaseState : IState, IDescribedState
 {
     private readonly IEnemyContext context;
     private readonly Pursuit pursuitSteering;
@@ -17,6 +17,11 @@ public class EnemyChaseState : IState
         this.context = context;
         this.pursuitSteering = new Pursuit(context.Transform, context.Vision?.Target, MaxPredictionTime, context.ChaseSpeed);
     }
+
+    public string StatusLabel => context.Vision != null && context.Vision.CanSeeTarget
+        ? "PERSECUCIÓN · PURSUIT"
+        : StateLabelFormatter.WithNavigation("BUSCANDO", context.PathNavigator);
+    public NpcAlertLevel AlertLevel => context.Vision != null && context.Vision.CanSeeTarget ? NpcAlertLevel.Hostile : NpcAlertLevel.Suspicious;
 
     public void Enter()
     {

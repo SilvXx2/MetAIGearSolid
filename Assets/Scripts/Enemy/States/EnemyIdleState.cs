@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyIdleState : IState
+public class EnemyIdleState : IState, IDescribedState
 {
     public enum IdleActionType
     {
@@ -35,6 +35,7 @@ public class EnemyIdleState : IState
     private IdleBehaviorOption currentOption;
     private Quaternion originalRotation;
     private float scanAngleTimer;
+    private string currentDescription;
 
     public EnemyIdleState(IEnemyContext context)
     {
@@ -97,6 +98,9 @@ public class EnemyIdleState : IState
         return Mathf.Lerp(baseWeight, maxAlertWeight, proximityFactor);
     }
 
+    public string StatusLabel => string.IsNullOrEmpty(currentDescription) ? "GUARDIA" : "GUARDIA: " + currentDescription;
+    public NpcAlertLevel AlertLevel => currentOption.ActionType == IdleActionType.AlertWideScan ? NpcAlertLevel.Suspicious : NpcAlertLevel.Calm;
+
     public void Enter()
     {
         context.Mover.Move(Vector3.zero, 0f);
@@ -107,6 +111,7 @@ public class EnemyIdleState : IState
         var chosenItem = roulette.SelectItem();
         currentOption = chosenItem.Value;
         currentTimer = currentOption.Duration;
+        currentDescription = chosenItem.Description;
 
         Debug.Log($"[{context.Transform.name}] FSM Idle: Seleccionado por Ruleta -> '{chosenItem.Description}' (Peso evaluado: {chosenItem.Weight:F2}).");
     }

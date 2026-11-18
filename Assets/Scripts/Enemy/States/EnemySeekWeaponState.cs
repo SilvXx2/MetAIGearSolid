@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemySeekWeaponState : IState
+public class EnemySeekWeaponState : IState, IDescribedState
 {
     private readonly IEnemyContext context;
     private readonly IWeaponHolder weaponHolder;
@@ -14,6 +14,9 @@ public class EnemySeekWeaponState : IState
         this.seekSteering = new Seek(context.Transform);
         this.defaultPickupDistance = Mathf.Max(0.5f, pickupDistance);
     }
+
+    public string StatusLabel => StateLabelFormatter.WithNavigation("BUSCANDO ARMA", context.PathNavigator);
+    public NpcAlertLevel AlertLevel => NpcAlertLevel.Vulnerable;
 
     public void Enter()
     {

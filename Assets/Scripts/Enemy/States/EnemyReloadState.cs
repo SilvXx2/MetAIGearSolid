@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyReloadState : IState
+public class EnemyReloadState : IState, IDescribedState
 {
     private readonly IEnemyContext context;
     private readonly IWeaponHolder weaponHolder;
@@ -10,6 +10,9 @@ public class EnemyReloadState : IState
         this.context = context;
         this.weaponHolder = weaponHolder;
     }
+
+    public string StatusLabel => "RECARGANDO · A CUBIERTO";
+    public NpcAlertLevel AlertLevel => NpcAlertLevel.Vulnerable;
 
     public void Enter()
     {

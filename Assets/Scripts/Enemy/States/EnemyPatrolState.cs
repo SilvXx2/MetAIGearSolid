@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyPatrolState : IState
+public class EnemyPatrolState : IState, IDescribedState
 {
     private readonly IEnemyContext context;
     private readonly Seek seekSteering;
@@ -12,6 +12,9 @@ public class EnemyPatrolState : IState
         this.context = context;
         this.seekSteering = new Seek(context.Transform);
     }
+
+    public string StatusLabel => StateLabelFormatter.WithNavigation("PATRULLA", context.PathNavigator);
+    public NpcAlertLevel AlertLevel => NpcAlertLevel.Calm;
 
     public void Enter()
     {

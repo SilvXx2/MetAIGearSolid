@@ -104,16 +104,6 @@ namespace Pathfinding
                     }
                 }
             }
-
-            var extraNodes = GetComponentsInChildren<Node>(true);
-            for (int i = 0; i < extraNodes.Length; i++)
-            {
-                if (extraNodes[i] != null && extraNodes[i].gameObject != gameObject)
-                {
-                    DestroyImmediate(extraNodes[i].gameObject);
-                }
-            }
-
             nodeGrid = new Node[0];
         }
 

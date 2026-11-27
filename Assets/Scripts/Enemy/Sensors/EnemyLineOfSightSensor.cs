@@ -28,32 +28,15 @@ public class EnemyLineOfSightSensor : MonoBehaviour, IVisionSensor
         if (target == null) target = FindFirstObjectByType<PlayerMovement>()?.transform;
     }
 
-    private const float LoSClearanceRadius = 0.25f;
-
     public bool HasLineOfSight(Vector3 from, Vector3 to)
     {
-        if (Physics.Linecast(from, to, obstacleMask, QueryTriggerInteraction.Ignore))
-        {
-            return false;
-        }
-
-        Vector3 toDest = to - from;
-        float dist = toDest.magnitude;
-        if (dist > 0.001f)
-        {
-            if (Physics.SphereCast(from, LoSClearanceRadius, toDest / dist, out _, dist, obstacleMask, QueryTriggerInteraction.Ignore))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return !Physics.Linecast(from, to, obstacleMask, QueryTriggerInteraction.Ignore);
     }
 
     public bool CanSeePosition(Vector3 targetPosition)
     {
         Vector3 origin = transform.position + eyeOffset;
-        Vector3 targetPoint = new Vector3(targetPosition.x, origin.y, targetPosition.z);
+        Vector3 targetPoint = targetPosition + eyeOffset;
         return HasLineOfSight(origin, targetPoint);
     }
 

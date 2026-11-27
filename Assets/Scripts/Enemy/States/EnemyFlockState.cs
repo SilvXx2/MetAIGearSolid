@@ -26,7 +26,7 @@ public class EnemyFlockState : IState, IDescribedState
 
     public void Update()
     {
-        // Si detecta al jugador en su Line of Sight, pasa al estado de alerta (Huir o Perseguir)
+        // Si detecta al jugador en su LoS, pasa a estado de alerta.
         if (context.Vision != null && context.Vision.CanSeeTarget && context.AlertState != null)
         {
             context.StateMachine.ChangeState(context.AlertState);
@@ -44,7 +44,7 @@ public class EnemyFlockState : IState, IDescribedState
             return;
         }
 
-        // Modo 2: Flocking Común (Separation + Cohesion + Alignment), con ruta opcional o deriva frontal
+        // Modo 2: Flocking Común (Separation + Cohesion + Alignment).
         UpdateStandardFlocking(flockDir);
     }
 
@@ -56,7 +56,7 @@ public class EnemyFlockState : IState, IDescribedState
         float distanceToLeader = toLeader.magnitude;
         Vector3 dirToLeader = distanceToLeader > 0.001f ? toLeader / distanceToLeader : Vector3.zero;
 
-        // Regla TP2: Si una pared corta la línea de visión con el líder, usa Pathfinding (A* / Theta*)
+        // Si se corta la línea de visión con el líder por una pared, usa Pathfinding (A* / Theta*)
         bool hasLoSToLeader = context.PathNavigator == null || context.PathNavigator.HasLineOfSightTo(leaderPos);
         if (!hasLoSToLeader && context.PathNavigator != null)
         {
@@ -78,7 +78,7 @@ public class EnemyFlockState : IState, IDescribedState
 
         context.PathNavigator?.ClearPath();
 
-        // Si ya está dentro de la distancia de parada del líder, desacelera y se detiene (Arrive)
+        // Si está dentro de la distancia de parada del líder, desacelera y se detiene (Arrive)
         if (distanceToLeader <= context.LeaderStoppingDistance)
         {
             context.Mover.Move(Vector3.zero, 0f);

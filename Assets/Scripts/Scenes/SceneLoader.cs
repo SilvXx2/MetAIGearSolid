@@ -34,6 +34,11 @@ public class SceneLoader : MonoBehaviour, ISceneCatalog
         Debug.LogError($"{name}: la escena '{sceneName}' no esta en la lista.", this);
     }
 
+    public void CloseGame()
+    {
+        Application.Quit();
+    }
+
 #if UNITY_EDITOR
     private void OnValidate()
     {

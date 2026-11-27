@@ -52,7 +52,7 @@ public class EnemyPathNavigator : MonoBehaviour, IPathNavigator
 
     public Vector3 GetMoveDirection(Vector3 targetPosition, ISteering directSteering = null)
     {
-        // Regla TP2: Si tiene línea de visión con su objetivo, usa Steering Behaviors.
+        // Si puede ver al objetivo, usa Steering Behaviors.
         if (HasLineOfSightTo(targetPosition))
         {
             ClearPath();
@@ -60,7 +60,7 @@ public class EnemyPathNavigator : MonoBehaviour, IPathNavigator
                 ? directSteering.GetDir()
                 : GetFlatDirection(transform.position, targetPosition);
 
-            // Si la predicción de Pursuit apunta hacia una pared pero el objetivo es visible directo, ir hacia el objetivo
+            // Si la predicción de Pursuit va hacia una pared pero el objetivo se ve, va igualmente al objetivo
             if (desiredDir != Vector3.zero && !HasLineOfSightTo(transform.position + desiredDir * 2f))
             {
                 desiredDir = GetFlatDirection(transform.position, targetPosition);
@@ -69,7 +69,7 @@ public class EnemyPathNavigator : MonoBehaviour, IPathNavigator
             return ApplyAvoidance(desiredDir);
         }
 
-        // Regla TP2: Si NO tiene línea de visión con su objetivo, pasa a utilizar Pathfinding.
+        // Si no lo puede ver al objetivo, usa Pathfinding.
         IPathMaker pathMaker = ActivePathMaker;
         if (pathMaker == null)
         {
@@ -144,8 +144,7 @@ public class EnemyPathNavigator : MonoBehaviour, IPathNavigator
                 continue;
             }
 
-            // Theta* smoothing dinámico: si el siguiente nodo en la lista ya tiene línea de visión directa
-            // desde la posición actual del agente, salteamos path[0] para evitar retroceder al nodo inicial.
+  
             if (path.Count > 1 && path[1] != null && HasLineOfSightTo(path[1].Position))
             {
                 path.RemoveAt(0);

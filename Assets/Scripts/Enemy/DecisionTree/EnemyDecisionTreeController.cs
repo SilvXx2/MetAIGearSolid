@@ -2,12 +2,14 @@ using UnityEngine;
 
 public class EnemyDecisionTreeController : EnemyController, IWeaponHolder, IWeaponStatusSource
 {
-    [Header("Parametros de Combate Cuerpo a Cuerpo / Arma")]
+    [Header("Parametros de Combate a Distancia / Arma")]
     [SerializeField] private bool hasWeapon = true;
-    [SerializeField] private int maxAmmo = 5;
-    [SerializeField] private int currentAmmo = 5;
-    [SerializeField] private float attackDistance = 2.5f;
-    [SerializeField] private float attackCooldown = 1.2f;
+    [SerializeField] private int maxAmmo = 4;
+    [SerializeField] private int currentAmmo = 4;
+    [SerializeField] private float attackDistance = 10f;
+    [SerializeField] private float aimDuration = 0.85f;
+    [SerializeField] private float aimLockDuration = 0.22f;
+    [SerializeField] private float attackCooldown = 0.85f;
     [SerializeField] private float reloadDuration = 3.5f;
     [SerializeField] private Transform weaponSpawnPoint;
     [SerializeField] private EnemyWeapon enemyWeapon;
@@ -32,6 +34,9 @@ public class EnemyDecisionTreeController : EnemyController, IWeaponHolder, IWeap
     private IDecisionNode rootNode;
     // Efecto visual al atacar
     private IAttackEffect attackEffect;
+    // Aviso visual de apuntado previo al disparo
+    private IAimTelegraph aimTelegraph;
+    private EnemyAttackState enemyAttackState;
     private int lastSyncedInspectorAmmo;
 
     // Estado de Ataque y visual
@@ -40,6 +45,7 @@ public class EnemyDecisionTreeController : EnemyController, IWeaponHolder, IWeap
         base.InitializeStates();
 
         attackEffect = GetComponent<IAttackEffect>();
+        aimTelegraph = GetComponent<IAimTelegraph>();
 
         if (attackEffect == null)
         {
@@ -48,7 +54,18 @@ public class EnemyDecisionTreeController : EnemyController, IWeaponHolder, IWeap
 
         EnsureWeaponComponent();
 
-        AttackState = new EnemyAttackState(this, OnEnemyAttacked, attackCooldown);
+        float effectiveRange = enemyWeapon != null ? enemyWeapon.AttackRange : attackDistance;
+        enemyAttackState = new EnemyAttackState(
+            context: this,
+            onAttackAction: OnEnemyAttacked,
+            attackCooldown: attackCooldown,
+            aimDuration: aimDuration,
+            aimLockDuration: aimLockDuration,
+            telegraphMaxLength: effectiveRange + 2f,
+            aimTelegraph: aimTelegraph,
+            muzzlePositionProvider: GetWeaponMuzzlePosition);
+
+        AttackState = enemyAttackState;
         SeekWeaponState = new EnemySeekWeaponState(this, this);
         ReloadState = new EnemyReloadState(this, this);
     }
@@ -142,6 +159,12 @@ public class EnemyDecisionTreeController : EnemyController, IWeaponHolder, IWeap
 
     private bool IsCloseToPlayer()
     {
+        // Si ya bloqueó la mira en los últimos instantes del apuntado, completa el disparo (y gasta 1 bala incluso si el jugador se cubrió).
+        if (StateMachine != null && StateMachine.CurrentState == AttackState && enemyAttackState != null && enemyAttackState.IsCommittedToShot)
+        {
+            return true;
+        }
+
         Transform target = Vision?.Target;
         if (target == null) return false;
 
@@ -219,12 +242,22 @@ public class EnemyDecisionTreeController : EnemyController, IWeaponHolder, IWeap
         }
     }
 
-    // Gasto un golpe al atacar (se cansa de tanto pegar el type)
-    private void OnEnemyAttacked()
+    private Vector3 GetWeaponMuzzlePosition()
     {
         if (enemyWeapon != null)
         {
-            enemyWeapon.TryAttack(transform, Vision?.Target);
+            return enemyWeapon.GetMuzzlePosition(transform);
+        }
+
+        return transform.position + Vector3.up * 1.1f;
+    }
+
+    // Dispara en la dirección apuntada y consume 1 bala (acerte o falle)
+    private void OnEnemyAttacked(Vector3 aimDirection)
+    {
+        if (enemyWeapon != null)
+        {
+            enemyWeapon.TryAttack(transform, Vision?.Target, aimDirection);
             currentAmmo = enemyWeapon.CurrentAmmo;
             lastSyncedInspectorAmmo = currentAmmo;
         }

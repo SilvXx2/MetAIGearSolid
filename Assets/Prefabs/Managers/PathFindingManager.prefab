@@ -49,11 +49,20 @@ MonoBehaviour:
   nodeGrid: []
   width: 20
   height: 20
-  distance: 2
+  distance: 4
   wallMask:
     serializedVersion: 2
     m_Bits: 8
+  floorMask:
+    serializedVersion: 2
+    m_Bits: 1
   wallCheckRadius: 0.45
+  requireFloorBeneath: 1
+  autoFitToWallsOnGenerate: 1
+  wallInsetPadding: 1.5
+  pruneBlockedNodes: 1
+  pruneUnreachableExteriorNodes: 1
+  playableSeeds: []
 --- !u!114 &7812995778136571169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,6 +77,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PathMaker
   wallMask:
     serializedVersion: 2
-    m_Bits: 0
-  _grid: {fileID: 0}
+    m_Bits: 8
+  _grid: {fileID: 4688390941277318291}
   algorithm: 2

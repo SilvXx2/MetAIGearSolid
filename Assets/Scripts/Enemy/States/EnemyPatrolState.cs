@@ -3,13 +3,14 @@ using UnityEngine;
 public class EnemyPatrolState : IState, IDescribedState
 {
     private readonly IEnemyContext context;
+    private readonly IPatrolRouteStrategy routeStrategy;
     private readonly Seek seekSteering;
     private int currentIndex = -1;
-    private int patrolDirection = 1;
 
-    public EnemyPatrolState(IEnemyContext context)
+    public EnemyPatrolState(IEnemyContext context, IPatrolRouteStrategy routeStrategy = null)
     {
         this.context = context;
+        this.routeStrategy = routeStrategy ?? new PingPongPatrolStrategy();
         this.seekSteering = new Seek(context.Transform);
     }
 
@@ -23,26 +24,13 @@ public class EnemyPatrolState : IState, IDescribedState
 
         if (currentIndex < 0 || currentIndex >= context.Waypoints.Length)
         {
-            currentIndex = context.GetClosestWaypointIndex();
-            patrolDirection = 1;
-
-            if (context.Waypoints.Length > 1 && context.Waypoints[currentIndex] != null)
-            {
-                Vector3 toWp = context.Waypoints[currentIndex].position - context.Transform.position;
-                toWp.y = 0f;
-                if (toWp.sqrMagnitude <= context.WaypointThreshold * context.WaypointThreshold)
-                {
-                    if (currentIndex >= context.Waypoints.Length - 1)
-                    {
-                        patrolDirection = -1;
-                    }
-                    else
-                    {
-                        patrolDirection = 1;
-                    }
-                    currentIndex += patrolDirection;
-                }
-            }
+            routeStrategy.Reset();
+            int closestIndex = context.GetClosestWaypointIndex();
+            currentIndex = routeStrategy.GetInitialIndex(
+                context.Transform,
+                context.Waypoints,
+                closestIndex,
+                context.WaypointThreshold);
         }
     }
 
@@ -60,6 +48,11 @@ public class EnemyPatrolState : IState, IDescribedState
             return;
         }
 
+        if (currentIndex < 0 || currentIndex >= context.Waypoints.Length)
+        {
+            currentIndex = 0;
+        }
+
         Transform targetWaypoint = context.Waypoints[currentIndex];
         if (targetWaypoint == null)
         {
@@ -74,22 +67,12 @@ public class EnemyPatrolState : IState, IDescribedState
         {
             if (context.Waypoints.Length > 1)
             {
-                bool reachedEndpoint = false;
+                ApplyWaypointOrientationIfConfigured(targetWaypoint);
 
-                if (currentIndex >= context.Waypoints.Length - 1)
-                {
-                    patrolDirection = -1;
-                    reachedEndpoint = true;
-                }
-                else if (currentIndex <= 0)
-                {
-                    patrolDirection = 1;
-                    reachedEndpoint = true;
-                }
+                PatrolStepResult step = routeStrategy.GetNextWaypoint(currentIndex, context.Waypoints);
+                currentIndex = step.NextIndex;
 
-                currentIndex += patrolDirection;
-
-                if (reachedEndpoint && context.IdleState != null)
+                if (step.ShouldPauseForIdle && context.IdleState != null)
                 {
                     context.StateMachine.ChangeState(context.IdleState);
                     return;
@@ -121,5 +104,20 @@ public class EnemyPatrolState : IState, IDescribedState
     {
         context.PathNavigator?.ClearPath();
         context.Mover.Move(Vector3.zero, 0f);
+    }
+
+    private void ApplyWaypointOrientationIfConfigured(Transform reachedWaypoint)
+    {
+        if (reachedWaypoint == null) return;
+
+        PatrolPointMetadata metadata = reachedWaypoint.GetComponent<PatrolPointMetadata>();
+        if (metadata == null || !metadata.OrientToWaypointForward) return;
+
+        Vector3 lookDir = reachedWaypoint.forward;
+        lookDir.y = 0f;
+        if (lookDir.sqrMagnitude > 0.0001f)
+        {
+            context.Transform.rotation = Quaternion.LookRotation(lookDir.normalized);
+        }
     }
 }

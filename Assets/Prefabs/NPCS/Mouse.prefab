@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 7242524233420858665}
   - component: {fileID: 80626167731580694}
   - component: {fileID: 8621116012405810342}
+  - component: {fileID: 5251229395883545727}
   m_Layer: 6
   m_Name: Mouse
   m_TagString: Untagged
@@ -205,6 +206,8 @@ MonoBehaviour:
   rotationSpeed: 10
   waypoints: []
   waypointThreshold: 0.5
+  patrolMode: 0
+  pauseEveryNWaypoints: 2
   loseTargetTime: 3
   visionSensor: {fileID: 8968055027142056180}
   avoidanceSensor: {fileID: 4993929771870900750}
@@ -268,3 +271,16 @@ MonoBehaviour:
   alertIconFontSize: 9
   alertIconDuration: 1.2
   showWeaponLine: 0
+--- !u!114 &5251229395883545727
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2931614447204069061}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc1ea795c0394b449837ee7c9b28e54a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RatAvoidanceMarker
+  avoidanceRadius: 1.25

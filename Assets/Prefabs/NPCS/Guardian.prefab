@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 9148428527558364792}
   - component: {fileID: 1230641547270517843}
   - component: {fileID: 6717652410011679191}
-  - component: {fileID: 904280065083278181}
   m_Layer: 0
   m_Name: Gun
   m_TagString: Untagged
@@ -91,25 +90,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &904280065083278181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 71483131684855171}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dcc11fd5f62e484d9fad93353dc676d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DamageAura
-  auraOrigin: {fileID: 5266405692156091395}
-  radius: 2.5
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 1
-  damagePerTick: 20
-  tickInterval: 0.5
 --- !u!1 &312701986675497222
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +201,11 @@ GameObject:
   - component: {fileID: 6408519142941059460}
   - component: {fileID: 647152575936957925}
   - component: {fileID: 7595435489429203509}
+  - component: {fileID: 5294312477590803723}
+  - component: {fileID: 1324692991607169892}
+  - component: {fileID: 6999133004742026432}
+  - component: {fileID: 230903643454352482}
+  - component: {fileID: 282663911234611085}
   m_Layer: 6
   m_Name: Guardian
   m_TagString: Untagged
@@ -426,19 +411,23 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   waypointThreshold: 0.5
+  patrolMode: 0
+  pauseEveryNWaypoints: 2
   loseTargetTime: 3
   visionSensor: {fileID: 6882387096455931232}
   avoidanceSensor: {fileID: 1537481481623706477}
   pathNavigator: {fileID: 0}
   rb: {fileID: 5317262529949821009}
   hasWeapon: 1
-  maxAmmo: 5
-  currentAmmo: 5
-  attackDistance: 2.5
-  attackCooldown: 1.2
+  maxAmmo: 4
+  currentAmmo: 4
+  attackDistance: 10
+  aimDuration: 0.85
+  aimLockDuration: 0.22
+  attackCooldown: 0.85
   reloadDuration: 3.5
   weaponSpawnPoint: {fileID: 0}
-  enemyWeapon: {fileID: 0}
+  enemyWeapon: {fileID: 282663911234611085}
   lastDecision: Ninguna
   currentReloadTimer: 0
 --- !u!114 &6408519142941059460
@@ -494,3 +483,98 @@ MonoBehaviour:
   alertIconFontSize: 9
   alertIconDuration: 1.2
   showWeaponLine: 1
+--- !u!114 &5294312477590803723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2665274237846792925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e35a607eb34e3f4e803c2255b2be9b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RangedProjectileFireMechanism
+  projectilePrefab: {fileID: 4156207622992791400, guid: 9a49821543e05254d98e70c149c0d4ca, type: 3}
+  muzzlePoint: {fileID: 9104845889169094628}
+  fallbackMuzzleOffset: {x: 0.24, y: 0.25, z: 0.95}
+  muzzleForwardPadding: 0.45
+  projectileSpeed: 20
+  projectileLifetime: 2.5
+  fallbackTracerColor: {r: 1, g: 0.45, b: 0.1, a: 1}
+--- !u!114 &1324692991607169892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2665274237846792925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f959a108686636f4dbd6a52bf1f7ac09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AimLaserTelegraph
+  aimingColor: {r: 1, g: 0.85, b: 0.15, a: 0.75}
+  lockedColor: {r: 1, g: 0.12, b: 0.12, a: 0.95}
+  baseWidth: 0.055
+  lockedWidth: 0.095
+  pulseFrequency: 24
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 8
+  laserMaterial: {fileID: 0}
+--- !u!114 &6999133004742026432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2665274237846792925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08ee9bbff8e72db41ac214c5105fed09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyRatAvoidanceSensor
+  detectionRadius: 3.8
+  personalClearance: 1.15
+  lateralDodgeWeight: 1.85
+  closeRepulsionWeight: 2.4
+  agentMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  wallCheckMask:
+    serializedVersion: 2
+    m_Bits: 8
+  sensorOffset: {x: 0, y: 0.5, z: 0}
+  maxBufferHits: 24
+--- !u!114 &230903643454352482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2665274237846792925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ae93a6c56dba7246b7c554242a3c6ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CompositeAvoidanceSensor
+  staticObstacleSensor: {fileID: 1537481481623706477}
+--- !u!114 &282663911234611085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2665274237846792925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecc5e7641762484ea7cab5451dad613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyWeapon
+  maxAmmo: 4
+  currentAmmo: 4
+  attackRange: 10
+  reloadDuration: 3.5
+  directDamage: 20
+  equippedHolsterVisual: {fileID: 312701986675497222}

@@ -14,6 +14,8 @@ public class EnemyWeapon : MonoBehaviour, IReloadableWeapon
     [SerializeField] private GameObject equippedHolsterVisual;
 
     private IAttackEffect attackEffect;
+    private IWeaponFireMechanism fireMechanism;
+    private IVisionSensor visionSensor;
     private float reloadTimer;
     private bool isReloading;
 
@@ -27,6 +29,28 @@ public class EnemyWeapon : MonoBehaviour, IReloadableWeapon
     private void Awake()
     {
         attackEffect = GetComponent<IAttackEffect>();
+        fireMechanism = GetComponent<IWeaponFireMechanism>();
+        visionSensor = GetComponent<IVisionSensor>();
+    }
+
+    public Vector3 GetMuzzlePosition(Transform attacker)
+    {
+        if (fireMechanism == null && attacker != null)
+        {
+            fireMechanism = attacker.GetComponent<IWeaponFireMechanism>();
+        }
+
+        if (fireMechanism != null)
+        {
+            return fireMechanism.GetMuzzlePosition(attacker);
+        }
+
+        if (equippedHolsterVisual != null)
+        {
+            return equippedHolsterVisual.transform.position;
+        }
+
+        return attacker != null ? attacker.position + Vector3.up * 1.1f : transform.position + Vector3.up * 1.1f;
     }
 
     public void Configure(
@@ -34,7 +58,8 @@ public class EnemyWeapon : MonoBehaviour, IReloadableWeapon
         int configuredCurrentAmmo,
         float configuredAttackRange,
         float configuredReloadDuration,
-        IAttackEffect effectOverride = null)
+        IAttackEffect effectOverride = null,
+        IWeaponFireMechanism fireMechanismOverride = null)
     {
         maxAmmo = Mathf.Max(1, configuredMaxAmmo);
         currentAmmo = Mathf.Clamp(configuredCurrentAmmo, 0, maxAmmo);
@@ -49,9 +74,40 @@ public class EnemyWeapon : MonoBehaviour, IReloadableWeapon
         {
             attackEffect = GetComponent<IAttackEffect>();
         }
+
+        if (fireMechanismOverride != null)
+        {
+            fireMechanism = fireMechanismOverride;
+        }
+        else if (fireMechanism == null)
+        {
+            fireMechanism = GetComponent<IWeaponFireMechanism>();
+        }
+
+        if (visionSensor == null)
+        {
+            visionSensor = GetComponent<IVisionSensor>();
+        }
     }
 
     public bool TryAttack(Transform attacker, Transform target)
+    {
+        Vector3 aimDir = Vector3.zero;
+        if (attacker != null && target != null)
+        {
+            aimDir = target.position - attacker.position;
+            aimDir.y = 0f;
+        }
+        else if (attacker != null)
+        {
+            aimDir = attacker.forward;
+            aimDir.y = 0f;
+        }
+
+        return TryAttack(attacker, target, aimDir);
+    }
+
+    public bool TryAttack(Transform attacker, Transform target, Vector3 aimDirection)
     {
         if (!CanFire) return false;
 
@@ -62,11 +118,24 @@ public class EnemyWeapon : MonoBehaviour, IReloadableWeapon
             attackEffect = attacker.GetComponent<IAttackEffect>();
         }
 
-        if (attackEffect != null)
+        if (fireMechanism == null && attacker != null)
         {
-            attackEffect.TriggerEffect();
+            fireMechanism = attacker.GetComponent<IWeaponFireMechanism>();
         }
-        else if (target != null && directDamage > 0f)
+
+        if (visionSensor == null && attacker != null)
+        {
+            visionSensor = attacker.GetComponent<IVisionSensor>();
+        }
+
+        attackEffect?.TriggerEffect();
+
+        if (fireMechanism != null)
+        {
+            LayerMask obstacleMask = visionSensor != null ? visionSensor.ObstacleMask : LayerMask.GetMask("ObstacleMask");
+            fireMechanism.ExecuteFire(attacker, target, aimDirection, directDamage, obstacleMask);
+        }
+        else if (attackEffect == null && target != null && directDamage > 0f)
         {
             var damageable = target.GetComponentInParent<IDamageable>();
             damageable?.TakeDamage(directDamage);

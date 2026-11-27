@@ -8,6 +8,8 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover, INpcStatusS
 
     [SerializeField] private Transform[] waypoints;
     [SerializeField] private float waypointThreshold = 0.5f;
+    [SerializeField] private PatrolRouteMode patrolMode = PatrolRouteMode.PingPong;
+    [SerializeField] private int pauseEveryNWaypoints = 2;
 
     [SerializeField] private float loseTargetTime = 3f;
     [SerializeField] private EnemyLineOfSightSensor visionSensor;
@@ -15,10 +17,12 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover, INpcStatusS
     [SerializeField] private EnemyPathNavigator pathNavigator;
     [SerializeField] private Rigidbody rb;
 
+    private IAvoidanceSensor activeAvoidance;
+
     public StateMachine StateMachine { get; private set; }
     public IMover Mover => this;
     public IVisionSensor Vision => visionSensor;
-    public IAvoidanceSensor Avoidance => avoidanceSensor;
+    public IAvoidanceSensor Avoidance => activeAvoidance != null ? activeAvoidance : avoidanceSensor;
     public IPathNavigator PathNavigator => pathNavigator;
     public IState PatrolState { get; protected set; }
     public IState IdleState { get; protected set; }
@@ -46,8 +50,9 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover, INpcStatusS
 
         if (visionSensor == null) visionSensor = gameObject.AddComponent<EnemyLineOfSightSensor>();
         if (avoidanceSensor == null) avoidanceSensor = gameObject.AddComponent<EnemyObstacleAvoidanceSensor>();
+        activeAvoidance = ResolveAvoidanceSensor();
         if (pathNavigator == null) pathNavigator = gameObject.AddComponent<EnemyPathNavigator>();
-        pathNavigator.Initialize(visionSensor, avoidanceSensor);
+        pathNavigator.Initialize(visionSensor, activeAvoidance);
 
         Collider col = GetComponent<Collider>();
         if (col != null)
@@ -82,10 +87,22 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover, INpcStatusS
     protected virtual void InitializeStates()
     {
         StateMachine = new StateMachine();
-        PatrolState = new EnemyPatrolState(this);
+        IPatrolRouteStrategy patrolStrategy = PatrolStrategyFactory.Create(patrolMode, pauseEveryNWaypoints);
+        PatrolState = new EnemyPatrolState(this, patrolStrategy);
         IdleState = new EnemyIdleState(this);
         ChaseState = new EnemyChaseState(this);
         RunAwayState = new EnemyRunAwayState(this, SafeDistance);
+    }
+
+    private IAvoidanceSensor ResolveAvoidanceSensor()
+    {
+        CompositeAvoidanceSensor composite = GetComponent<CompositeAvoidanceSensor>();
+        if (composite != null)
+        {
+            return composite;
+        }
+
+        return avoidanceSensor;
     }
 
     private void CacheComponents()
@@ -139,17 +156,37 @@ public class EnemyController : MonoBehaviour, IEnemyContext, IMover, INpcStatusS
     {
         if (waypoints == null || waypoints.Length == 0) return;
 
-        Gizmos.color = Color.cyan;
+        Gizmos.color = patrolMode == PatrolRouteMode.RandomWeighted
+            ? new Color(1f, 0.65f, 0.1f)
+            : (patrolMode == PatrolRouteMode.Loop ? Color.green : Color.cyan);
+
         for (int i = 0; i < waypoints.Length; i++)
         {
             if (waypoints[i] == null) continue;
 
             Gizmos.DrawWireSphere(waypoints[i].position, waypointThreshold);
 
-            int nextIndex = (i + 1) % waypoints.Length;
-            if (waypoints[nextIndex] != null)
+            if (patrolMode == PatrolRouteMode.RandomWeighted)
             {
-                Gizmos.DrawLine(waypoints[i].position, waypoints[nextIndex].position);
+                for (int j = i + 1; j < waypoints.Length; j++)
+                {
+                    if (waypoints[j] != null)
+                    {
+                        Gizmos.DrawLine(waypoints[i].position, waypoints[j].position);
+                    }
+                }
+            }
+            else if (patrolMode == PatrolRouteMode.Loop)
+            {
+                int nextIndex = (i + 1) % waypoints.Length;
+                if (waypoints[nextIndex] != null)
+                {
+                    Gizmos.DrawLine(waypoints[i].position, waypoints[nextIndex].position);
+                }
+            }
+            else if (i < waypoints.Length - 1 && waypoints[i + 1] != null)
+            {
+                Gizmos.DrawLine(waypoints[i].position, waypoints[i + 1].position);
             }
         }
     }
